@@ -36,9 +36,6 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 	private TextView priceOfBundleText;
 	private Button buyButton;
 	
-	//added by Mike, 20160425
-    private static final String MY_PURCHASED_ITEMS = "MyPurchasedItems";
-
 	public PurchaseLanguageBundleListAdapter(Activity a, Bundle ownedItems, IInAppBillingService mS)
 	{
 		myActivity = a;
@@ -64,7 +61,7 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 	        //; last accessed: 20150609
 	        //answer by Elenasys
 	        //added by Mike, 20160425
-	        SharedPreferences prefs = myActivity.getSharedPreferences(MY_PURCHASED_ITEMS, android.content.Context.MODE_PRIVATE);
+	        SharedPreferences prefs = myActivity.getSharedPreferences(UsbongConstants.MY_PURCHASED_ITEMS, android.content.Context.MODE_PRIVATE);
 	        if (prefs!=null) {
 				languageBundleList[0][1] = prefs.getString(UsbongConstants.ALL_LOCAL_LANGUAGES_PRODUCT_ID, UsbongConstants.DEFAULT_PRICE);
 				languageBundleList[1][1] = prefs.getString(UsbongConstants.ALL_FOREIGN_LANGUAGES_PRODUCT_ID, UsbongConstants.DEFAULT_PRICE);

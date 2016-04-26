@@ -50,6 +50,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
@@ -631,13 +632,25 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 								continue;
 							}
 						}
+						else {
+							if (UsbongUtils.isLocalLanguage(myTransArrayList.get(i))) {
+								arrayAdapter.add(myTransArrayList.get(i));				    								
+								continue;
+							}							
+						}
+						
 						if (!UsbongUtils.hasUnlockedForeignLanguages) {
 							if (!UsbongUtils.isLocalLanguage(myTransArrayList.get(i))) {
 								arrayAdapter.add(myTransArrayList.get(i)+" (Locked)");				    								
 								continue;							
 							}
 						}
-
+						else {
+							if (!UsbongUtils.isLocalLanguage(myTransArrayList.get(i))) {
+								arrayAdapter.add(myTransArrayList.get(i));				    								
+								continue;							
+							}							
+						}
 					}
 				}
 				
@@ -1231,7 +1244,16 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
     	            JSONObject jo = new JSONObject(purchaseData);
     	            String sku = jo.getString("productId");
     	            if (sku.contains("local")) {
-				    	new AlertDialog.Builder(this.getInstance()).setTitle("Purchase Complete!")
+    	            	UsbongUtils.hasUnlockedLocalLanguages=true; //added by Mike, 20160427
+    	                //Reference: http://stackoverflow.com/questions/23024831/android-shared-preferences-example
+    	                //; last accessed: 9 June 2015
+    	                //answer by Elenasys
+    	                //added by Mike, 9 June 2015
+    	                SharedPreferences.Editor editor = getSharedPreferences(UsbongConstants.MY_PURCHASED_ITEMS, MODE_PRIVATE).edit();
+    	                editor.putString(UsbongConstants.ALL_LOCAL_LANGUAGES_PRODUCT_ID, "Owned");
+    	                editor.commit();
+
+				    	new AlertDialog.Builder(getInstance()).setTitle("Purchase Complete!")
 	            		.setMessage("You have unlocked All Local Languages!")
 						.setPositiveButton("OK", new DialogInterface.OnClickListener() {					
 							@Override
@@ -1240,7 +1262,16 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 						}).show();
     	            }
     	            else {    	            	
-				    	new AlertDialog.Builder(this.getInstance()).setTitle("Purchase Complete!")
+    	            	UsbongUtils.hasUnlockedForeignLanguages=true; //added by Mike, 20160427
+    	                //Reference: http://stackoverflow.com/questions/23024831/android-shared-preferences-example
+    	                //; last accessed: 9 June 2015
+    	                //answer by Elenasys
+    	                //added by Mike, 9 June 2015
+    	                SharedPreferences.Editor editor = getSharedPreferences(UsbongConstants.MY_PURCHASED_ITEMS, MODE_PRIVATE).edit();
+    	                editor.putString(UsbongConstants.ALL_FOREIGN_LANGUAGES_PRODUCT_ID, "Owned");
+    	                editor.commit();
+
+    	            	new AlertDialog.Builder(getInstance()).setTitle("Purchase Complete!")
 	            		.setMessage("You have unlocked All Foreign Languages!")
 						.setPositiveButton("OK", new DialogInterface.OnClickListener() {					
 							@Override

@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:usbong="http://schemas.android.com/apk/res-auto">
+	<item android:id="@+id/speak"
+		  android:title="Speak"
+	/>
+	<item android:id="@+id/set_language"
+		  android:title="Set Language"
+	/>	
+	<item android:id="@+id/settings"
+		  android:title="Settings"
+	/>		
+	<item android:id="@+id/about"
+		  android:title="About"
+	/>			
+</menu>

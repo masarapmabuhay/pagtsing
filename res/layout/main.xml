@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	style="@style/UsbongMainMenuParentLayout"
+	android:background="@drawable/bg">
+	<LinearLayout style="@style/UsbongTextImageMainLayout">	    
+	    <ImageView android:id="@+id/cover_img"
+  	    	style="@style/UsbongTextImageDisplayImageView"	 
+	  	    android:background="@drawable/cover"	    
+	  	    android:layout_width="fill_parent"
+	  	    android:layout_height="fill_parent"	  	    
+			android:contentDescription="@string/cover_img" /> 		    
+	</LinearLayout>	
+	<Button android:id="@+id/start_button"
+		style="@style/UsbongMainMenuButton" 
+		android:text="@string/start" 
+		android:background="@drawable/button_yellow"/>	
+</LinearLayout>

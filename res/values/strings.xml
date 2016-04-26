@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+    <string name="hello_world">Hello World, UsbongActivity!</string>
+    <string name="app_name">Usbong PagTsing</string>
+    <string name="start">Start</string>
+    <string name="cover_img">Cover Image</string>
+    <string name="usbong_logo">Usbong Logo</string>        
+    <string name="logo">Logo</string>    
+    <string name="instructions">Instructions</string>    
+    <string name="about">About</string>
+    <string name="community">Community</string>    
+    <string name="settings">Settings</string>    
+    <string name="exit">Exit</string>        
+    <string name="dont_have_an_account">Don\'t have an account?</string>        
+    
+    <string name="back">Back</string>    
+    <string name="next">Next</string>    
+    <string name="team_name_textview">Team Name:</string>    
+	<string name="pleaseChooseAnAnswerStringValue">Please choose an answer.</string>
+	<string name="pleaseChooseAnAnswerStringValueJapanese">答えを選んでください。</string>
+	<string name="pleaseChooseAnAnswerStringValueFilipino">Mangyaring pumili ng isang sagot.</string>
+	<string name="pleaseChooseAnAnswerStringValueMandarin">请选择一个答案</string>
+	
+	<string name="pleaseAnswerFieldStringValue">Please input an answer.</string>
+	<string name="pleaseAnswerFieldStringValueJapanese">答えを入力してください。.</string>
+	<string name="pleaseAnswerFieldStringValueFilipino">Mangyaring maglagay ng sagot.</string>
+	<string name="pleaseAnswerFieldStringValueMandarin">请录入一个答案</string>
+				
+	<string name="pressTheMenuButtonToSaveStringValue">Please press the Menu button on your device to open the Save option.</string>
+
+	<string name="signup"><u>Sign Up</u></string>
+	<string name="terms">Usbong is continuously being developed and improved. In as much as we do our best to make this software as reliable as possible, we don’t guarantee it’s 100% bug-free. We offer the software on an AS IS basis, without warranties. Further, we reserve the right to terminate your account and data, at any time without notice, in the unlikely event that it becomes necessary for our testing purposes. We are NOT liable for any direct or indirect losses, such as data and service interruption, that this may cause you. Finally, Usbong is also under the Apache v2.0 license.\n\nCopyright 2015. Usbong Social Systems, Inc.\n\nLicensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at\n\nhttp://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.\n\nIf you understand and agree to this, please select "Agree". </string>
+	
+	<string name="pleaseMakeSureThatXMLTreeExistsString">Please make sure that an XML tree exists in your SD Card\'s \'/usbong/usbong_trees/\' directory!</string>
+
+	<string name="alertStringValueEnglish">Alert!</string>
+	<string name="alertStringValueFilipino">Alerto!</string>
+	<string name="alertStringValueJapanese">ご注意下さい！</string>	
+	<string name="alertStringValueMandarin">请注意一下！</string>	
+
+	<string name="areYouSureYouWantToReturnToTheTitleScreen">Are you sure you want to return to the Title Screen?</string>
+			
+	<string name="areYouSureYouWantToReturnToMainMenuEnglish">Are you sure you want to return to Main Menu?</string>
+	<string name="areYouSureYouWantToReturnToMainMenuFilipino">Sigurado ka bang nais mong bumalik sa Main Menu?</string>
+	<string name="areYouSureYouWantToReturnToMainMenuJapanese">メイン・メニューへ本当に戻りたいですか？</string>
+	<string name="areYouSureYouWantToReturnToMainMenuMandarin">你肯定回去选单吗？</string>
+				
+	<string name="noStringValueEnglish">No</string>
+	<string name="yesStringValueEnglish">Yes</string>  
+	<string name="noStringValueFilipino">Hindi</string>
+	<string name="yesStringValueFilipino">Oo</string>  
+	<string name="noStringValueJapanese">いいえ</string>
+	<string name="yesStringValueJapanese">はい</string>  
+	<string name="noStringValueMandarin">是</string>
+	<string name="yesStringValueMandarin">不是</string>  
+		
+	<string name="noStringValue">No [いいえ]</string>
+	<string name="yesStringValue">Yes [はい]</string>  
+
+    <string name="UsbongEndStateTextViewFILIPINO">Narating mo na ang dulo.</string>        
+    <string name="UsbongEndStateTextViewENGLISH">You\'ve now reached the end.</string>        
+    <string name="UsbongEndStateTextViewJAPANESE">終点に着いた。</string>       
+    <string name="UsbongEndStateTextViewMANDARIN">终点到了。</string>       
+    
+    <string name="UsbongPaintScreenTextViewFILIPINO">Paint Iskrin</string>        
+    <string name="UsbongPaintScreenTextViewENGLISH">Paint Screen</string>        
+    <string name="UsbongPaintScreenTextViewJAPANESE">ペイントスクリーン</string>       
+
+    <string name="UsbongRecordTextViewFILIPINO">Rekord</string>        
+    <string name="UsbongRecordTextViewENGLISH">Record</string>        
+    <string name="UsbongRecordTextViewJAPANESE">レコード</string>       
+    
+    <string name="UsbongStopTextViewFILIPINO">Hinto</string>        
+    <string name="UsbongStopTextViewENGLISH">Stop</string>        
+    <string name="UsbongStopTextViewJAPANESE">ストップ</string>       
+
+    <string name="UsbongPlayTextViewFILIPINO">Play</string>        
+    <string name="UsbongPlayTextViewENGLISH">Play</string>        
+    <string name="UsbongPlayTextViewJAPANESE">プレイ</string>       
+
+    <string name="UsbongTakePhotoTextViewFILIPINO">Kumuha ng Litrato</string>        
+    <string name="UsbongTakePhotoTextViewENGLISH">Take Photo</string>        
+    <string name="UsbongTakePhotoTextViewJAPANESE">写真を撮る</string>       
+
+    <string name="UsbongRunPaintTextViewFILIPINO">Patakbuhin ang Paint</string>        
+    <string name="UsbongRunPaintTextViewENGLISH">Run Paint</string>        
+    <string name="UsbongRunPaintTextViewJAPANESE">ペイントを起動する</string>       
+
+    <string name="UsbongQRCodeReaderTextViewFILIPINO">Kunin ang QR Code</string>        
+    <string name="UsbongQRCodeReaderTextViewENGLISH">Get QR Code</string>        
+    <string name="UsbongQRCodeReaderTextViewJAPANESE">QRコードを取る</string>       
+
+    <string name="UsbongQRCodeReaderContentResultNoneFILIPINO">Wala pang naka-save na QR Code content!</string>        
+    <string name="UsbongQRCodeReaderContentResultNoneENGLISH">No QR Code content has been saved yet!</string>        
+    <string name="UsbongQRCodeReaderContentResultNoneJAPANESE">保存されたQRコードの内容はまだない！</string>       
+
+    <string name="UsbongQRCodeReaderContentResultFILIPINO">Nai-save ang laman ng QR Code!</string>        
+    <string name="UsbongQRCodeReaderContentResultENGLISH">QR Code content successfully saved!</string>        
+    <string name="UsbongQRCodeReaderContentResultJAPANESE">QRコードの内容が保存された！</string>       
+    
+    <string name="UsbongEncryptAlertMessageFILIPINO">Maglagay ng 4-digit PIN code upang ma-encrypt ang iyong data. Siguraduhing tandaan ang PIN na ito, sapagkat kakailanganin mo ito sa pag-decrypt na iyong data.</string>        
+    <string name="UsbongEncryptAlertMessageENGLISH">Enter a 4-digit PIN code to encrypt your data. Make sure to remember this PIN, because you will need it when you decrypt your data later on.</string>        
+    <string name="UsbongEncryptAlertMessageJAPANESE">データを暗号するために4桁のPINコードを入力してください。後でデータを復号する時にこのPINが必要ですので、忘れないでください。</string>           
+    
+    <string name="Usbong4DigitsPinAlertMessageFILIPINO">Dapat may eksaktong 4 na digit ang iyong PIN code.</string>        
+    <string name="Usbong4DigitsPinAlertMessageENGLISH">Your PIN code should have exactly 4 digits.</string>        
+    <string name="Usbong4DigitsPinAlertMessageJAPANESE">PINコードが必ず4桁にしてください。</string>           
+    
+    <string name="UsbongEndStateTextView">You\'ve now reached the end. \n　終点に着いた。 \n　你已经到了终点。</string>        
+    <string name="default_textview">default</string>    
+    <string name="loading_textview">loading...</string>    
+
+    <string name="loading_long_textview">long: loading...</string>    
+    <string name="loading_lat_textview">lat: loading...</string>    
+        
+	<string name="date_month">month</string>
+    <string-array name="months_array">
+        <item>Jan</item>
+        <item>Feb</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>Aug</item>
+        <item>Sept</item>
+        <item>Oct</item>
+        <item>Nov</item>
+        <item>Dec</item>
+    </string-array>
+
+	<string name="date_day">day</string>
+    <string-array name="day_array">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30</item>
+        <item>31</item>
+    </string-array>
+
+    <string name="pre_instructions_textview">Divide your team into two: Group A and Group B.</string>    	    		
+
+    <string name="results_textview">Results</string>    	    		
+	<string name="audio_recorder_textview">Audio Recorder</string>
+    
+	<string name="photo_capture_textview">Photo Capture</string>
+	<string name="paint_textview">Paint Screen</string>
+	<string name="qr_code_reader_textview">QR Code Reader</string>
+		
+    <string name="vocab_list_filename">vocab_list.txt</string>
+    
+    <string name="group_a_hint_textview">The word to be guessed by the other group is: </string>
+    <string name="group_b_guess_textview">The correct word is:</string>
+    <string name="group_b_guess_edittext">Input your guess here!</string>
+
+    <string name="NoAudioFile">Hit the Menu Button on your phone to record an audio file</string>
+    <string name="NoImageCaptured">Hit the Menu Button on your phone to capture an image</string>
+    <string name="NoImageDrawn">Hit the Menu Button on your phone to draw an image</string>
+    
+    <dimen name="defTextSize">30px</dimen>
+    <color name="defTextColor">#FFFFFF</color>
+    <dimen name="defPaddingTop">16px</dimen>        
+    
+    <string name="select_language">Select language.</string>
+    <string name="select">Select</string>
+    <string name="cancel">Cancel</string>
+    
+    <string name="enter_pin">PIN</string>
+    
+    <string name="download">Download</string>
+    <string name="desc">ImageView</string>
+    <string name="action_search">Search</string>
+    <string name="action_settings">Settings</string>
+    <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>    
+
+    <string name="profile_picture_desc">Profile picture</string>
+    <string name="welcome">Welcome to the Usbong App</string>    
+    <string name="sign_in_label">Sign-in</string>
+    <string name="manage_account_label">Manage account</string>
+    <string name="sign_out_label">Sign-out</string>
+    
+    <string name="buy">buy</string>        
+    <string name="price">price</string>        
+    <string name="name">name</string>    
+</resources>

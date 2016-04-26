@@ -65,9 +65,11 @@ import usbong.android.pagtsing.R;
 import usbong.android.pagtsing.UsbongDecisionTreeEngineActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -75,7 +77,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
+import android.os.IBinder;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextPaint;
@@ -90,6 +94,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.android.vending.billing.IInAppBillingService;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -174,6 +179,12 @@ public class UsbongUtils {
     //added by Mike, 20160413
     public static Hashtable<String,Hashtable<String,String>> myHashtableOfWordHints;
 	
+	//added by Mike, 20160426
+    private static IInAppBillingService mService;
+    private static ServiceConnection mServiceConn;
+    private static Bundle ownedItems;
+
+    
 	//added by Mike, 22 Sept. 2015
 	public static String getCurrLanguage(){
 		return currLanguage;
@@ -221,6 +232,55 @@ public class UsbongUtils {
 		return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches(); //updated by Mike, 24 Sept. 2015
 	}
 
+	//-----------------------------------------------------------------
+    //setup In-App Billing Service
+    //reference: http://developer.android.com/google/play/billing/billing_integrate.html
+    //last accessed: 20160123
+    //added by Mike, 20160426
+    //-----------------------------------------------------------------
+	public static void initInAppBillingService(Activity a) {
+	    mServiceConn = new ServiceConnection() {
+	       @Override
+	       public void onServiceDisconnected(ComponentName name) {
+	           mService = null;
+	       }
+
+	       @Override
+	       public void onServiceConnected(ComponentName name,
+	          IBinder service) {
+	           mService = IInAppBillingService.Stub.asInterface(service);
+	       }
+	    };
+	    Intent serviceIntent =
+	    	      new Intent("com.android.vending.billing.InAppBillingService.BIND");
+	    serviceIntent.setPackage("com.android.vending");
+	    a.bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
+
+	    try {
+	    	//added by Mike, 20160425
+	    	if (mService != null) {
+	    		ownedItems = mService.getPurchases(3, a.getPackageName(), "inapp", null);
+	    	}	    	
+	    }
+	    catch (Exception e) {
+	    	e.printStackTrace();
+	    }
+	}
+	
+	public static Bundle getInAppOwnedItems() {
+		return ownedItems;
+	}
+
+	public static IInAppBillingService getInAppMService() {
+		return mService;
+	}
+
+	public static void unbindInAppService(Activity a) {
+		if (mService != null) {
+	        a.unbindService(mServiceConn);
+	    }
+	}
+	
 	//edited by Mike, 20160417
 	public static void initUsbongConfigFile() {
         try 

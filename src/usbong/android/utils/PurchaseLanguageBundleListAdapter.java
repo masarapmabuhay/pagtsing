@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import usbong.android.pagtsing.R;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
@@ -37,10 +39,10 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 	//added by Mike, 20160425
     private static final String MY_PURCHASED_ITEMS = "MyPurchasedItems";
 
-	public PurchaseLanguageBundleListAdapter(Activity a, Bundle ownedItems, IInAppBillingService mService)
+	public PurchaseLanguageBundleListAdapter(Activity a, Bundle ownedItems, IInAppBillingService mS)
 	{
 		myActivity = a;
-		this.mService = mService;
+		mService = mS;
 		
 	    languageBundleList = new String[languageBundleListSize][2];
 		languageBundleList[0][0] = "All Local Languages";
@@ -168,15 +170,30 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 			  public void onClick(View v) 
 			  {
 				  try {
+				    if (mService==null) {
+				    	UsbongUtils.initInAppBillingService(myActivity);
+				    	mService = UsbongUtils.getInAppMService();
+				    }
+				    
 				    UsbongUtils.generateDateTimeStamp();
-					buyIntentBundle = mService.getBuyIntent(3, myActivity.getPackageName(),
-							  defaultSkuList.get(pos), "inapp", UsbongUtils.getDateTimeStamp());
-
-					PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
-					myActivity.startIntentSenderForResult(pendingIntent.getIntentSender(),
-							   1001, new Intent(), Integer.valueOf(0), Integer.valueOf(0),
-							   Integer.valueOf(0));
-					
+				    if (mService!=null) {
+						buyIntentBundle = mService.getBuyIntent(3, myActivity.getPackageName(),
+								  defaultSkuList.get(pos), "inapp", UsbongUtils.getDateTimeStamp());
+	
+						PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
+						myActivity.startIntentSenderForResult(pendingIntent.getIntentSender(),
+								   1001, new Intent(), Integer.valueOf(0), Integer.valueOf(0),
+								   Integer.valueOf(0));
+				    }
+				    else {				    					    	
+				    	new AlertDialog.Builder(myActivity).setTitle("Connection Failure")
+	            		.setMessage("Unable to connect to Google Play. Please make sure that you are connected to the internet.")
+						.setPositiveButton("OK", new DialogInterface.OnClickListener() {					
+							@Override
+							public void onClick(DialogInterface dialog, int which) {	            				
+							}
+						}).show();
+				    }
 				  } catch (RemoteException | SendIntentException e) {
 						e.printStackTrace();
 				  }				

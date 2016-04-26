@@ -42,6 +42,7 @@ import usbong.android.utils.PurchaseLanguageBundleListAdapter;
 import usbong.android.utils.UsbongConstants;
 import usbong.android.utils.UsbongScreenProcessor;
 import usbong.android.utils.UsbongUtils;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -217,11 +218,7 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
     private YouTubePlayerFragment myYouTubePlayerFragment;
 	public static YouTubePlayer myYouTubePlayer;
 	private UdteaObject myUdteaObject;
-	
-	//edited by Mike, 20160417
-    private IInAppBillingService mService;
-    private ServiceConnection mServiceConn;
-    
+	    
 	//edited by Mike, 20160417
     public static ArrayList<Integer> selectedSettingsItems;
     public static boolean[] selectedSettingsItemsInBoolean;
@@ -233,7 +230,6 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
     //added by Mike, 20160420
     private static AlertDialog.Builder purchaseLanguagesListDialog;
     private static PurchaseLanguageBundleListAdapter myPurchaseLanguageBundleListAdapter;
-    private Bundle ownedItems; //added by Mike, 20160425
 	
 //	@SuppressLint("InlinedApi")
     @Override
@@ -342,30 +338,7 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 
 	    //added by Mike, March 4, 2013
 	    usbongAnswerContainerCounter=0;
-	    
-	  //-----------------------------------------------------------------
-	    //setup In-App Billing Service
-	    //reference: http://developer.android.com/google/play/billing/billing_integrate.html
-	    //last accessed: 20160123
-	    //added by Mike, 20160123
-	    //-----------------------------------------------------------------
-	    mServiceConn = new ServiceConnection() {
-	       @Override
-	       public void onServiceDisconnected(ComponentName name) {
-	           mService = null;
-	       }
-
-	       @Override
-	       public void onServiceConnected(ComponentName name,
-	          IBinder service) {
-	           mService = IInAppBillingService.Stub.asInterface(service);
-	       }
-	    };
-	    Intent serviceIntent =
-	    	      new Intent("com.android.vending.billing.InAppBillingService.BIND");
-	    serviceIntent.setPackage("com.android.vending");
-	    bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
-	    //-----------------------------------------------------------------
+	    	    
 	    ArrayList<String> skuList = new ArrayList<String> ();
 	    skuList.add(UsbongConstants.ALL_LOCAL_LANGUAGES_PRODUCT_ID);
 	    skuList.add(UsbongConstants.ALL_FOREIGN_LANGUAGES_PRODUCT_ID);
@@ -373,10 +346,8 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 	    querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
 	    
 	    try {
-		    //added by Mike, 20160425
-	    	if (mService != null) {
-	    		ownedItems = mService.getPurchases(3, getPackageName(), "inapp", null);
-	    	}
+	    	UsbongUtils.initInAppBillingService(getInstance());
+
 /*	    
 		    Bundle skuDetails = mService.getSkuDetails(3,
 		    		   getPackageName(), "inapp", querySkus);	    	
@@ -403,7 +374,7 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 	    //added by Mike, 20160421
 		//init purchase languages list
         purchaseLanguagesListDialog = new AlertDialog.Builder(getInstance());
-        myPurchaseLanguageBundleListAdapter = new PurchaseLanguageBundleListAdapter(getInstance(), ownedItems, mService);
+        myPurchaseLanguageBundleListAdapter = new PurchaseLanguageBundleListAdapter(getInstance(), UsbongUtils.getInAppOwnedItems(), UsbongUtils.getInAppMService());
         purchaseLanguagesListDialog.setTitle("Purchase");	
 		purchaseLanguagesListDialog.setSingleChoiceItems(myPurchaseLanguageBundleListAdapter,0,
 		        new DialogInterface.OnClickListener() {
@@ -1260,10 +1231,22 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
     	            JSONObject jo = new JSONObject(purchaseData);
     	            String sku = jo.getString("productId");
     	            if (sku.contains("local")) {
-        	            //TODO: fix this
-    	            	//alert("You have bought All Local Languages!");    	            	
+				    	new AlertDialog.Builder(this.getInstance()).setTitle("Purchase Complete!")
+	            		.setMessage("You have unlocked All Local Languages!")
+						.setPositiveButton("OK", new DialogInterface.OnClickListener() {					
+							@Override
+							public void onClick(DialogInterface dialog, int which) {	            				
+							}
+						}).show();
     	            }
     	            else {    	            	
+				    	new AlertDialog.Builder(this.getInstance()).setTitle("Purchase Complete!")
+	            		.setMessage("You have unlocked All Foreign Languages!")
+						.setPositiveButton("OK", new DialogInterface.OnClickListener() {					
+							@Override
+							public void onClick(DialogInterface dialog, int which) {	            				
+							}
+						}).show();
     	            }
     	          }
     	          catch (JSONException e) {
@@ -1288,9 +1271,7 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 			myBGMediaPlayer.release();			
 		}
 		//added by Mike, 20160417
-		if (mService != null) {
-	        unbindService(mServiceConn);
-	    }
+		UsbongUtils.unbindInAppService(getInstance());
 	}
 	
     public static UsbongDecisionTreeEngineActivity getInstance() {

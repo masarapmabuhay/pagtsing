@@ -120,6 +120,14 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 		return arg0;
 	}
 
+	public void setLocalLanguageToOwned() {
+		languageBundleList[0][1] = "Owned";	
+	}
+
+	public void setForeignLanguageToOwned() {
+		languageBundleList[1][1] = "Owned";	
+	}
+
 	@SuppressLint("DefaultLocale")
 	@Override
 	public View getView(int position, View convertView, ViewGroup arg2) {

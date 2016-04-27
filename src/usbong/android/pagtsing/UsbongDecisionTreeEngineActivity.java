@@ -620,6 +620,10 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 				    arrayAdapter.add(myTransArrayList.get(i));				    
 				}
 */
+		        //make sure is empty every time 
+		        //added by Mike, 20160427
+		        arrayAdapter.clear();
+		        
 				for (int i = 0; i < myTransArrayListSize; i++) {
 					if (UsbongUtils.isLanguageIsAnException(myTransArrayList.get(i))) {
 						arrayAdapter.add(myTransArrayList.get(i));				    
@@ -1245,7 +1249,9 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
     	            String sku = jo.getString("productId");
     	            if (sku.contains("local")) {
     	            	UsbongUtils.hasUnlockedLocalLanguages=true; //added by Mike, 20160427
-    	                //Reference: http://stackoverflow.com/questions/23024831/android-shared-preferences-example
+    	            	myPurchaseLanguageBundleListAdapter.setLocalLanguageToOwned();
+    	            	
+    	            	//Reference: http://stackoverflow.com/questions/23024831/android-shared-preferences-example
     	                //; last accessed: 9 June 2015
     	                //answer by Elenasys
     	                //added by Mike, 9 June 2015
@@ -1263,7 +1269,9 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
     	            }
     	            else {    	            	
     	            	UsbongUtils.hasUnlockedForeignLanguages=true; //added by Mike, 20160427
-    	                //Reference: http://stackoverflow.com/questions/23024831/android-shared-preferences-example
+    	            	myPurchaseLanguageBundleListAdapter.setForeignLanguageToOwned();
+
+    	            	//Reference: http://stackoverflow.com/questions/23024831/android-shared-preferences-example
     	                //; last accessed: 9 June 2015
     	                //answer by Elenasys
     	                //added by Mike, 9 June 2015

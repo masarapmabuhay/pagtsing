@@ -13,6 +13,7 @@ import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -54,6 +55,7 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 		//added by Mike, 20160425
 	    int response=-1;
 	    if (ownedItems!=null) {
+	    	Log.d(">>>","ownedItems NOT null");
 			response = ownedItems.getInt("RESPONSE_CODE");
 	    }
 	    else {
@@ -186,9 +188,20 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 								  defaultSkuList.get(pos), "inapp", UsbongUtils.getDateTimeStamp());
 	
 						PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
-						myActivity.startIntentSenderForResult(pendingIntent.getIntentSender(),
-								   1001, new Intent(), Integer.valueOf(0), Integer.valueOf(0),
-								   Integer.valueOf(0));
+						if (pendingIntent!=null) {
+							myActivity.startIntentSenderForResult(pendingIntent.getIntentSender(),
+									   1001, new Intent(), Integer.valueOf(0), Integer.valueOf(0),
+									   Integer.valueOf(0));							
+						}
+						else {
+					    	new AlertDialog.Builder(myActivity).setTitle("Connection Failure!")
+		            		.setMessage("Unable to connect to Google Play. Please make sure that you are connected to the internet.")
+							.setPositiveButton("OK", new DialogInterface.OnClickListener() {					
+								@Override
+								public void onClick(DialogInterface dialog, int which) {	            				
+								}
+							}).show();							
+						}
 				    }
 				    else {				    					    	
 				    	new AlertDialog.Builder(myActivity).setTitle("Connection Failure")

@@ -339,34 +339,15 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 
 	    //added by Mike, March 4, 2013
 	    usbongAnswerContainerCounter=0;
-	    	    
+/*	    	    
 	    ArrayList<String> skuList = new ArrayList<String> ();
 	    skuList.add(UsbongConstants.ALL_LOCAL_LANGUAGES_PRODUCT_ID);
 	    skuList.add(UsbongConstants.ALL_FOREIGN_LANGUAGES_PRODUCT_ID);
 	    Bundle querySkus = new Bundle();
 	    querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
-	    
+*/	    
 	    try {
 	    	UsbongUtils.initInAppBillingService(getInstance());
-
-/*	    
-		    Bundle skuDetails = mService.getSkuDetails(3,
-		    		   getPackageName(), "inapp", querySkus);	    	
-		    
-		    int response = skuDetails.getInt("RESPONSE_CODE");
-		    if (response == 0) { //0 = BILLING_RESPONSE_RESULT_OK
-		       ArrayList<String> responseList
-		          = skuDetails.getStringArrayList("DETAILS_LIST");
-
-		       for (String thisResponse : responseList) {
-		          JSONObject object = new JSONObject(thisResponse);
-		          String sku = object.getString("productId");
-		          String price = object.getString("price");
-		          if (sku.equals("premiumUpgrade")) mPremiumUpgradePrice = price;
-		          else if (sku.equals("gas")) mGasPrice = price;
-		       }
-		    }
-*/		    
 	    }
 	    catch (Exception e) {
 	    	e.printStackTrace();
@@ -568,7 +549,9 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 		StringBuffer sb = new StringBuffer();
 		switch(item.getItemId())
 		{
-			case(R.id.set_language):				
+			case(R.id.set_language):	
+//				UsbongUtils.checkForInAppOwnedItems(getInstance());
+			
 //				final Dialog dialog = new Dialog(this);
 				final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 				// Get the layout inflater

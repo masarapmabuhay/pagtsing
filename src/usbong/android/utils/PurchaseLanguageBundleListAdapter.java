@@ -42,9 +42,7 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 	private TextView nameOfBundleText;
 	private TextView priceOfBundleText;
 	private Button buyButton;
-	
-	private ProgressDialog myProgressDialog;
-	
+		
 	public PurchaseLanguageBundleListAdapter(Activity a, Bundle ownedItems, IInAppBillingService mS)
 	{
 		myActivity = a;
@@ -65,12 +63,14 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 		//added by Mike, 20160425
 	    if (ownedItems!=null) {
 	    	Log.d(">>>","ownedItems NOT null");
-//			new MyPLBLABackgroundTask().execute();        
+			new MyPLBLABackgroundTask().execute();    
+/*	    	
 	    	int response = -1;
 			response = myOwnedItemsGetResponseCode();
 			if (response == 0) { //SUCCESS
 				updateLanguageBundleList();
 			}	
+*/			
 	    }
 	    else {
 	        //Reference: http://stackoverflow.com/questions/23024831/android-shared-preferences-example
@@ -90,6 +90,7 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 		    	}
 	        }
 	    }		
+	    UsbongUtils.hasLoadedPurchaseLanguageBundleList=true;
 	    // if continuationToken != null, call getPurchases again
 	    // and pass in the token to retrieve more items
 	}
@@ -120,7 +121,7 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 	    	  }
 		   }
 	}
-/*	
+	
 	//added by Mike, 29 Sept. 2015
     //Reference: http://stackoverflow.com/questions/13017122/how-to-show-progressdialog-across-launching-a-new-activity;
     //last accessed: 29 Sept. 2015; answer by: Slartibartfast, 23 Oct. 2012
@@ -150,7 +151,7 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 		    return true;		
 		}		
 	}
-*/    
+    
     public int myOwnedItemsGetResponseCode() {
 		return myOwnedItems.getInt("RESPONSE_CODE");    	
     }

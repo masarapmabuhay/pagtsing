@@ -42,14 +42,11 @@ import usbong.android.utils.PurchaseLanguageBundleListAdapter;
 import usbong.android.utils.UsbongConstants;
 import usbong.android.utils.UsbongScreenProcessor;
 import usbong.android.utils.UsbongUtils;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -59,7 +56,7 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.support.v7.app.AppCompatActivity;
@@ -88,7 +85,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.vending.billing.IInAppBillingService;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
 
@@ -372,7 +368,7 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 		                dialog.dismiss();
 		            }
 		        });  
-
+			    	
         //reference: Labeeb P's answer from stackoverflow;
         //http://stackoverflow.com/questions/4275797/view-setpadding-accepts-only-in-px-is-there-anyway-to-setpadding-in-dp;
         //last accessed: 23 May 2013
@@ -443,10 +439,34 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 		@Override
 		protected void onPostExecute(Boolean result) {
 			Log.d(">>>>","onPostExectue()");
+	    	new Thread(new Runnable() {
+			    public void run() {
+			    	while (!UsbongUtils.hasLoadedPurchaseLanguageBundleList) {
+			            android.os.SystemClock.sleep(1000); 						    		
+			            Log.d(">>>","sleeping");
+			    	}
+			    	
+		            Log.d(">>>","DONE!");
+		            Handler mainHandler = new Handler(getInstance().getBaseContext().getMainLooper());
+		            Runnable myRunnable = new Runnable() {
+		            	@Override
+		            	public void run() {
+						    initParser();
+						    if (instance.myProgressDialog != null) {
+						        instance.myProgressDialog.dismiss();
+						    }				            		
+		            	}
+		            };
+		            mainHandler.post(myRunnable);
+		    		return; //end this background thread
+			    }
+			}).start();
+/*
 		    initParser();
 		    if (instance.myProgressDialog != null) {
 		        instance.myProgressDialog.dismiss();
 		    }		
+*/		    
 		}
 		
 		@Override

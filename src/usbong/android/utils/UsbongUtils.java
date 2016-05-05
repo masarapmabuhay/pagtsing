@@ -192,6 +192,7 @@ public class UsbongUtils {
     private static ServiceConnection mServiceConn;
     private static Bundle ownedItems;
 
+    public static boolean hasLoadedPurchaseLanguageBundleList=false;
     
 	//added by Mike, 22 Sept. 2015
 	public static String getCurrLanguage(){

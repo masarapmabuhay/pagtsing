@@ -1398,6 +1398,9 @@ public class UsbongUtils {
 	    	if (s.equals("Spanish")) {
 	    		return LANGUAGE_SPANISH;
 	    	}
+	    	if (s.equals("Korean")) {
+	    		return LANGUAGE_KOREAN;
+	    	}
     	}
     	return LANGUAGE_ENGLISH;
     }
@@ -1420,6 +1423,8 @@ public class UsbongUtils {
     			return "French";
     		case LANGUAGE_SPANISH:
     			return "Spanish";
+    		case LANGUAGE_KOREAN:
+    			return "Korean";
     		default:
     			return "English";
     	}

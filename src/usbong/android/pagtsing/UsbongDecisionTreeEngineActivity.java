@@ -229,6 +229,8 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
     private static PurchaseLanguageBundleListAdapter myPurchaseLanguageBundleListAdapter;
 	private static DialogInterface purchaseLanguagesListDialogInterface;
 
+	private ArrayAdapter<String> arrayAdapter; //added by Mike, 20160507
+	
 //	@SuppressLint("InlinedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -560,6 +562,138 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 		return false;
 	}
 		
+	public void initSetLanguage() {
+//		UsbongUtils.checkForInAppOwnedItems(getInstance());
+		
+//		final Dialog dialog = new Dialog(this);
+		final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+		// Get the layout inflater
+//    	LayoutInflater inflater = this.getLayoutInflater();
+    	dialog.setTitle("Select Language");
+
+		arrayAdapter = new ArrayAdapter<String>(
+		        this,
+		        android.R.layout.simple_list_item_single_choice) {
+			private AlertDialog myAlertDialog;
+			@Override
+		    public boolean isEnabled(int position) {
+				if (UsbongUtils.isLanguageIsAnException(this.getItem(position).toString())) {
+					return true;
+				}
+
+				if (!UsbongUtils.hasUnlockedLocalLanguages) {
+					if (UsbongUtils.isLocalLanguage(this.getItem(position).toString())) {
+						if ((myAlertDialog==null) || (!myAlertDialog.isShowing())) {
+							myAlertDialog = purchaseLanguagesListDialog.show();
+						}
+						return false;
+					}
+				}
+				
+				if (!UsbongUtils.hasUnlockedForeignLanguages) {
+					//if it is not a local language, then it is a foreign language
+					if (!UsbongUtils.isLocalLanguage(this.getItem(position).toString())) {
+						if ((myAlertDialog==null) || (!myAlertDialog.isShowing())) {
+							myAlertDialog = purchaseLanguagesListDialog.show();
+						}
+						return false;
+					}
+				}
+		    	return true;
+		    }
+		};				
+		
+        ArrayList<String> myTransArrayList = UsbongUtils.getAvailableTranslationsArrayList(myTree);
+
+        if (myTransArrayList==null) {
+        	myTransArrayList = new ArrayList<String>();
+        }
+        //add the language setting of the xml tree to the list
+        myTransArrayList.add(0, UsbongUtils.getDefaultLanguage());
+        final int myTransArrayListSize = myTransArrayList.size();
+/*		        
+		for (int i = 0; i < myTransArrayListSize; i++) {
+		    arrayAdapter.add(myTransArrayList.get(i));				    
+		}
+*/
+        //make sure is empty every time 
+        //added by Mike, 20160427
+        arrayAdapter.clear();
+        
+		for (int i = 0; i < myTransArrayListSize; i++) {
+			if (UsbongUtils.isLanguageIsAnException(myTransArrayList.get(i))) {
+				arrayAdapter.add(myTransArrayList.get(i));				    
+				continue;
+			}
+			else {
+				if (!UsbongUtils.hasUnlockedLocalLanguages) {
+					if (UsbongUtils.isLocalLanguage(myTransArrayList.get(i))) {
+						arrayAdapter.add(myTransArrayList.get(i)+" (Locked)");				    								
+						continue;
+					}
+				}
+				else {
+					if (UsbongUtils.isLocalLanguage(myTransArrayList.get(i))) {
+						arrayAdapter.add(myTransArrayList.get(i));				    								
+						continue;
+					}							
+				}
+				
+				if (!UsbongUtils.hasUnlockedForeignLanguages) {
+					if (!UsbongUtils.isLocalLanguage(myTransArrayList.get(i))) {
+						arrayAdapter.add(myTransArrayList.get(i)+" (Locked)");				    								
+						continue;							
+					}
+				}
+				else {
+					if (!UsbongUtils.isLocalLanguage(myTransArrayList.get(i))) {
+						arrayAdapter.add(myTransArrayList.get(i));				    								
+						continue;							
+					}							
+				}
+			}
+		}
+		
+		//20160420				
+		// Unlock Languages button
+		dialog.setPositiveButton("Unlock Languages",
+		        new DialogInterface.OnClickListener() {
+		            public void onClick(DialogInterface dialog, int which) {
+		            	purchaseLanguagesListDialog.show();
+		            }
+		        });
+		// cancel button
+		dialog.setNegativeButton("Cancel",
+		        new DialogInterface.OnClickListener() {
+		            public void onClick(DialogInterface dialog, int which) {
+		                dialog.dismiss();
+		            }
+		        });
+		dialog.setSingleChoiceItems(arrayAdapter,currSelectedItemForSetLanguage,//setAdapter(arrayAdapter,
+		        new DialogInterface.OnClickListener() {
+		            public void onClick(DialogInterface dialog, int which) {
+		                Log.i("Selected Item : ", arrayAdapter.getItem(which));
+		                currSelectedItemForSetLanguage = which;
+		                
+						UsbongUtils.setLanguage(arrayAdapter.getItem(currSelectedItemForSetLanguage));
+
+						currLanguageBeingUsed = UsbongUtils.getLanguageID(UsbongUtils.getSetLanguage());
+						UsbongUtils.setCurrLanguage(UsbongUtils.getSetLanguage()); //added by Mike, 22 Sept. 2015
+						
+						//added by Mike, 4 June 2015
+						//remove the current element in the node container and start anew
+						//so that when end-user presses back, the previous screen will appear,
+						//and not cause the same screen to reappear.
+						if (!usbongNodeContainer.isEmpty()) {
+							usbongNodeContainer.removeElementAt(usbongNodeContainerCounter);                            
+			                usbongNodeContainerCounter--;
+						}						
+						initParser();
+		                dialog.dismiss();
+		            }
+		        });
+		dialog.show();
+	}
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{		
@@ -571,136 +705,10 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 		switch(item.getItemId())
 		{
 			case(R.id.set_language):	
-//				UsbongUtils.checkForInAppOwnedItems(getInstance());
-			
-//				final Dialog dialog = new Dialog(this);
-				final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-				// Get the layout inflater
-//		    	LayoutInflater inflater = this.getLayoutInflater();
-		    	dialog.setTitle("Select Language");
-
-				final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-				        this,
-				        android.R.layout.simple_list_item_single_choice) {
-					private AlertDialog myAlertDialog;
-					@Override
-				    public boolean isEnabled(int position) {
-						if (UsbongUtils.isLanguageIsAnException(this.getItem(position).toString())) {
-							return true;
-						}
-
-						if (!UsbongUtils.hasUnlockedLocalLanguages) {
-							if (UsbongUtils.isLocalLanguage(this.getItem(position).toString())) {
-								if ((myAlertDialog==null) || (!myAlertDialog.isShowing())) {
-									myAlertDialog = purchaseLanguagesListDialog.show();
-								}
-								return false;
-							}
-						}
-						
-						if (!UsbongUtils.hasUnlockedForeignLanguages) {
-							//if it is not a local language, then it is a foreign language
-							if (!UsbongUtils.isLocalLanguage(this.getItem(position).toString())) {
-								if ((myAlertDialog==null) || (!myAlertDialog.isShowing())) {
-									myAlertDialog = purchaseLanguagesListDialog.show();
-								}
-								return false;
-							}
-						}
-				    	return true;
-				    }
-				};				
-				
-		        ArrayList<String> myTransArrayList = UsbongUtils.getAvailableTranslationsArrayList(myTree);
-
-		        if (myTransArrayList==null) {
-		        	myTransArrayList = new ArrayList<String>();
-		        }
-		        //add the language setting of the xml tree to the list
-		        myTransArrayList.add(0, UsbongUtils.getDefaultLanguage());
-		        final int myTransArrayListSize = myTransArrayList.size();
-/*		        
-				for (int i = 0; i < myTransArrayListSize; i++) {
-				    arrayAdapter.add(myTransArrayList.get(i));				    
-				}
-*/
-		        //make sure is empty every time 
-		        //added by Mike, 20160427
-		        arrayAdapter.clear();
-		        
-				for (int i = 0; i < myTransArrayListSize; i++) {
-					if (UsbongUtils.isLanguageIsAnException(myTransArrayList.get(i))) {
-						arrayAdapter.add(myTransArrayList.get(i));				    
-						continue;
-					}
-					else {
-						if (!UsbongUtils.hasUnlockedLocalLanguages) {
-							if (UsbongUtils.isLocalLanguage(myTransArrayList.get(i))) {
-								arrayAdapter.add(myTransArrayList.get(i)+" (Locked)");				    								
-								continue;
-							}
-						}
-						else {
-							if (UsbongUtils.isLocalLanguage(myTransArrayList.get(i))) {
-								arrayAdapter.add(myTransArrayList.get(i));				    								
-								continue;
-							}							
-						}
-						
-						if (!UsbongUtils.hasUnlockedForeignLanguages) {
-							if (!UsbongUtils.isLocalLanguage(myTransArrayList.get(i))) {
-								arrayAdapter.add(myTransArrayList.get(i)+" (Locked)");				    								
-								continue;							
-							}
-						}
-						else {
-							if (!UsbongUtils.isLocalLanguage(myTransArrayList.get(i))) {
-								arrayAdapter.add(myTransArrayList.get(i));				    								
-								continue;							
-							}							
-						}
-					}
-				}
-				
-				//20160420				
-				// Unlock Languages button
-				dialog.setPositiveButton("Unlock Languages",
-				        new DialogInterface.OnClickListener() {
-				            public void onClick(DialogInterface dialog, int which) {
-				            	purchaseLanguagesListDialog.show();
-				            }
-				        });
-				// cancel button
-				dialog.setNegativeButton("Cancel",
-				        new DialogInterface.OnClickListener() {
-				            public void onClick(DialogInterface dialog, int which) {
-				                dialog.dismiss();
-				            }
-				        });
-				dialog.setSingleChoiceItems(arrayAdapter,currSelectedItemForSetLanguage,//setAdapter(arrayAdapter,
-				        new DialogInterface.OnClickListener() {
-				            public void onClick(DialogInterface dialog, int which) {
-				                Log.i("Selected Item : ", arrayAdapter.getItem(which));
-				                currSelectedItemForSetLanguage = which;
-				                
-								UsbongUtils.setLanguage(arrayAdapter.getItem(currSelectedItemForSetLanguage));
-
-								currLanguageBeingUsed = UsbongUtils.getLanguageID(UsbongUtils.getSetLanguage());
-								UsbongUtils.setCurrLanguage(UsbongUtils.getSetLanguage()); //added by Mike, 22 Sept. 2015
-								
-								//added by Mike, 4 June 2015
-								//remove the current element in the node container and start anew
-								//so that when end-user presses back, the previous screen will appear,
-								//and not cause the same screen to reappear.
-								if (!usbongNodeContainer.isEmpty()) {
-									usbongNodeContainer.removeElementAt(usbongNodeContainerCounter);                            
-					                usbongNodeContainerCounter--;
-								}						
-								initParser();
-				                dialog.dismiss();
-				            }
-				        });
-				dialog.show();
+				initSetLanguage();
+				//refresh the menu options
+				supportInvalidateOptionsMenu(); //added by Mike, 20160507
+				invalidateOptionsMenu();
 				return true;
 			case(R.id.speak):
 				processSpeak(sb);

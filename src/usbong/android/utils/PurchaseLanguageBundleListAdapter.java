@@ -89,8 +89,8 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 	    			UsbongUtils.hasUnlockedForeignLanguages=true;
 		    	}
 	        }
+		    UsbongUtils.hasLoadedPurchaseLanguageBundleList=true;
 	    }		
-	    UsbongUtils.hasLoadedPurchaseLanguageBundleList=true;
 	    // if continuationToken != null, call getPurchases again
 	    // and pass in the token to retrieve more items
 	}
@@ -151,6 +151,7 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 			if (response == 0) { //SUCCESS
 				updateLanguageBundleList();
 			}			
+		    UsbongUtils.hasLoadedPurchaseLanguageBundleList=true;
 		}
 		
 		@Override

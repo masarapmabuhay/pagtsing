@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="usbong.android.pagtsing"
-      android:versionCode="10"
-      android:versionName="1.4.8-20160507"
+      android:versionCode="11"
+      android:versionName="1.4.9-20160507"
       android:installLocation="auto"      
 >
 

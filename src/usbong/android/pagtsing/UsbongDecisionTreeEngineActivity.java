@@ -347,33 +347,43 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 	    Bundle querySkus = new Bundle();
 	    querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
 */	    
-	    try {
-	    	UsbongUtils.initInAppBillingService(getInstance());
-	    }
-	    catch (Exception e) {
-	    	e.printStackTrace();
-	    }
-	        	
-	    //added by Mike, 20160421
-		//init purchase languages list
-        purchaseLanguagesListDialog = new AlertDialog.Builder(getInstance());
-        myPurchaseLanguageBundleListAdapter = new PurchaseLanguageBundleListAdapter(getInstance(), UsbongUtils.getInAppOwnedItems(), UsbongUtils.getInAppMService());
-        purchaseLanguagesListDialog.setTitle("Purchase");	
-		purchaseLanguagesListDialog.setSingleChoiceItems(myPurchaseLanguageBundleListAdapter,0,
-		        new DialogInterface.OnClickListener() {
-		            public void onClick(DialogInterface dialog, int which) {								            	
-//		                Log.i("Selected Item : ", (String) myPurchaseLanguageBundleListAdapter.getItem(which));
-//		                dialog.dismiss();		            	
-		            	purchaseLanguagesListDialogInterface = dialog;
-		            }
-		        });				            	
-    	purchaseLanguagesListDialog.setNegativeButton("Cancel",
-		        new DialogInterface.OnClickListener() {
-		            public void onClick(DialogInterface dialog, int which) {
-		                dialog.dismiss();
-		            }
-		        });  		
+	    
+	    new AsyncTask<String, Integer, Boolean>() {
+			@Override
+			protected void onPostExecute(Boolean result) {
+			    //added by Mike, 20160421
+				//init purchase languages list
+		        purchaseLanguagesListDialog = new AlertDialog.Builder(getInstance());
+		        myPurchaseLanguageBundleListAdapter = new PurchaseLanguageBundleListAdapter(getInstance(), UsbongUtils.getInAppOwnedItems(), UsbongUtils.getInAppMService());
+		        purchaseLanguagesListDialog.setTitle("Purchase");	
+				purchaseLanguagesListDialog.setSingleChoiceItems(myPurchaseLanguageBundleListAdapter,0,
+				        new DialogInterface.OnClickListener() {
+				            public void onClick(DialogInterface dialog, int which) {								            	
+	//			                Log.i("Selected Item : ", (String) myPurchaseLanguageBundleListAdapter.getItem(which));
+	//			                dialog.dismiss();		            	
+				            	purchaseLanguagesListDialogInterface = dialog;
+				            }
+				        });				            	
+		    	purchaseLanguagesListDialog.setNegativeButton("Cancel",
+				        new DialogInterface.OnClickListener() {
+				            public void onClick(DialogInterface dialog, int which) {
+				                dialog.dismiss();
+				            }
+				        });  		
+			}
 
+			@Override
+			protected Boolean doInBackground(String... params) {
+			    try {
+			    	UsbongUtils.initInAppBillingService(getInstance());
+			    }
+			    catch (Exception e) {
+			    	e.printStackTrace();
+			    }
+				return true;		
+			}	
+	    }.execute();
+	    	        	
         //reference: Labeeb P's answer from stackoverflow;
         //http://stackoverflow.com/questions/4275797/view-setpadding-accepts-only-in-px-is-there-anyway-to-setpadding-in-dp;
         //last accessed: 23 May 2013
@@ -443,11 +453,11 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 		
 		@Override
 		protected void onPostExecute(Boolean result) {
-			Log.d(">>>>","onPostExectue()");
+			Log.d(">>>>","onPostExecute()");
 	    	new Thread(new Runnable() {
 			    public void run() {
 			    	while (!UsbongUtils.hasLoadedPurchaseLanguageBundleList) {
-			            android.os.SystemClock.sleep(1000); 						    		
+			            android.os.SystemClock.sleep(3000); 						    		
 			            Log.d(">>>","sleeping");
 			    	}
 			    	

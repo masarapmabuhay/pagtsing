@@ -193,6 +193,7 @@ public class UsbongUtils {
     private static Bundle ownedItems;
 
     public static boolean hasLoadedPurchaseLanguageBundleList=false;
+	private static int ownedItemsResponse=-1; //added by Mike, 20160507
     
 	//added by Mike, 22 Sept. 2015
 	public static String getCurrLanguage(){
@@ -274,6 +275,20 @@ public class UsbongUtils {
 	    	//added by Mike, 20160425
 	    	if (mService != null) {
             	ownedItems = mService.getPurchases(3, myActivityInstance.getPackageName(), "inapp", null);
+/*            	
+            	ownedItemsResponse = -1;
+            	ownedItemsResponse = ownedItems.getInt("RESPONSE_CODE");
+*/
+    	    	new Thread(new Runnable() {
+    			    public void run() {
+    			    	//while (ownedItemsResponse==-1) {
+    			    	while (ownedItems==null) {
+    			            android.os.SystemClock.sleep(3000); 						    		
+    			            Log.d(">>>","sleeping");
+    			    	}
+    		    		return; //end this background thread
+    			    }
+    			}).start();
 	    	}	    	
 	    }
 	    catch (Exception e) {

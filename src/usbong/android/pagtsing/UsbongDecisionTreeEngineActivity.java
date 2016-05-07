@@ -43,6 +43,7 @@ import usbong.android.utils.UsbongConstants;
 import usbong.android.utils.UsbongScreenProcessor;
 import usbong.android.utils.UsbongUtils;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -228,7 +229,8 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
     private static AlertDialog.Builder purchaseLanguagesListDialog;
     private static PurchaseLanguageBundleListAdapter myPurchaseLanguageBundleListAdapter;
 	private static DialogInterface purchaseLanguagesListDialogInterface;
-
+	private static AlertDialog.Builder setLanguageDialog;
+    	
 	private ArrayAdapter<String> arrayAdapter; //added by Mike, 20160507
 	
 //	@SuppressLint("InlinedApi")
@@ -370,8 +372,8 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 		            public void onClick(DialogInterface dialog, int which) {
 		                dialog.dismiss();
 		            }
-		        });  
-			    	
+		        });  		
+
         //reference: Labeeb P's answer from stackoverflow;
         //http://stackoverflow.com/questions/4275797/view-setpadding-accepts-only-in-px-is-there-anyway-to-setpadding-in-dp;
         //last accessed: 23 May 2013
@@ -566,10 +568,10 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 //		UsbongUtils.checkForInAppOwnedItems(getInstance());
 		
 //		final Dialog dialog = new Dialog(this);
-		final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+		setLanguageDialog = new AlertDialog.Builder(this);
 		// Get the layout inflater
 //    	LayoutInflater inflater = this.getLayoutInflater();
-    	dialog.setTitle("Select Language");
+		setLanguageDialog.setTitle("Select Language");
 
 		arrayAdapter = new ArrayAdapter<String>(
 		        this,
@@ -656,20 +658,20 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 		
 		//20160420				
 		// Unlock Languages button
-		dialog.setPositiveButton("Unlock Languages",
+		setLanguageDialog.setPositiveButton("Unlock Languages",
 		        new DialogInterface.OnClickListener() {
 		            public void onClick(DialogInterface dialog, int which) {
 		            	purchaseLanguagesListDialog.show();
 		            }
 		        });
 		// cancel button
-		dialog.setNegativeButton("Cancel",
+		setLanguageDialog.setNegativeButton("Cancel",
 		        new DialogInterface.OnClickListener() {
 		            public void onClick(DialogInterface dialog, int which) {
 		                dialog.dismiss();
 		            }
 		        });
-		dialog.setSingleChoiceItems(arrayAdapter,currSelectedItemForSetLanguage,//setAdapter(arrayAdapter,
+		setLanguageDialog.setSingleChoiceItems(arrayAdapter,currSelectedItemForSetLanguage,//setAdapter(arrayAdapter,
 		        new DialogInterface.OnClickListener() {
 		            public void onClick(DialogInterface dialog, int which) {
 		                Log.i("Selected Item : ", arrayAdapter.getItem(which));
@@ -692,7 +694,7 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 		                dialog.dismiss();
 		            }
 		        });
-		dialog.show();
+		setLanguageDialog.show();
 	}
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
@@ -1305,15 +1307,13 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
     	        	 //alert("Failed to parse purchase data.");
     	             e.printStackTrace();
     	          }
-    	         
-    	          //added by Mike, 20160507
-    	          if (purchaseLanguagesListDialogInterface!=null) {
-        	          purchaseLanguagesListDialogInterface.dismiss();    	        	  
-    	          }
-    	          
-    	          if ((inAppSettingsDialog!=null)&&(inAppSettingsDialog.isShowing())) {    	        	  
-    	        	  inAppSettingsDialog.dismiss();
-    	          }
+
+    	         //refresh the menu options
+ 		    	AlertDialog purchaseLanguagesListAlertDialog = purchaseLanguagesListDialog.create();
+ 		    	purchaseLanguagesListAlertDialog.invalidateOptionsMenu();
+
+ 		    	AlertDialog setLanguageAlertDialog = setLanguageDialog.create();
+ 		    	setLanguageAlertDialog.invalidateOptionsMenu(); 		    	
     	      }
     	   }
     }

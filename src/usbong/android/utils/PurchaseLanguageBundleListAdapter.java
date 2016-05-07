@@ -315,12 +315,12 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 			buyButton.setVisibility(Button.VISIBLE);			
 		}
 		
-//		final int pos = position;		
-		myPos = position;		
+		final int pos = position;		
 		buyButton.setOnClickListener(new OnClickListener() {           
 			  @Override
 			  public void onClick(View v) 
 			  {
+				  myPos = pos;		
 				  new BuyBackgroundTask().execute();				  		
 //				  Log.d(">>>>","pressed!"+defaultSkuList.get(pos));
 //				  Log.d(">>>>","pressed!"+languageBundleList[pos][0]);

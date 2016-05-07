@@ -1,23 +1,20 @@
 package usbong.android.utils;
 
-import java.net.URL;
 import java.util.ArrayList;
+
+import org.json.JSONObject;
 
 import usbong.android.pagtsing.R;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.BaseBundle;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.RemoteException;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,11 +34,14 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 	public String[][] languageBundleList;
     private IInAppBillingService mService; //added by Mike, 20160426	
 	private Bundle buyIntentBundle; //added by Mike, 20160426	
+	private PendingIntent pendingBuyIntent; //added by Mike, 20160506
 	public Bundle myOwnedItems;
 	
 	private TextView nameOfBundleText;
 	private TextView priceOfBundleText;
 	private Button buyButton;
+	
+	private int myPos;
 		
 	public PurchaseLanguageBundleListAdapter(Activity a, Bundle ownedItems, IInAppBillingService mS)
 	{
@@ -58,8 +58,8 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 
 	    defaultSkuList = new ArrayList<String> ();
 	    defaultSkuList.add(UsbongConstants.ALL_LOCAL_LANGUAGES_PRODUCT_ID);
-	    defaultSkuList.add(UsbongConstants.ALL_FOREIGN_LANGUAGES_PRODUCT_ID);
-		
+	    defaultSkuList.add(UsbongConstants.ALL_FOREIGN_LANGUAGES_PRODUCT_ID);	    
+	    
 		//added by Mike, 20160425
 	    if (ownedItems!=null) {
 	    	Log.d(">>>","ownedItems NOT null");
@@ -110,7 +110,19 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 		      String purchaseData = purchaseDataList.get(i);
 		      String signature = signatureList.get(i);
 		      String sku = ownedSkus.get(i);
-
+/*
+//consume product items
+		      try {
+			      JSONObject o = new JSONObject(purchaseData);
+			      String purchaseToken = o.optString("token", o.optString("purchaseToken"));		    	  
+			      //Consume purchaseToken
+			      mService.consumePurchase(3, myActivity.getPackageName(), purchaseToken);
+		      }
+		      catch (Exception e) {
+		    	  e.printStackTrace();
+		      }
+*/		      
+		      
 	    	  if (sku.contains("local")) {
     			languageBundleList[0][1] = "Owned";
     			UsbongUtils.hasUnlockedLocalLanguages=true;
@@ -118,7 +130,7 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 	    	  else { //foreign
 	    		languageBundleList[1][1] = "Owned";			    		  
     			UsbongUtils.hasUnlockedForeignLanguages=true;
-	    	  }
+	    	  }	    	  
 		   }
 	}
 	
@@ -130,12 +142,12 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 		
     	@Override
 		protected void onPreExecute() {
-			Log.d(">>>>","onPreExectue()");
+			Log.d(">>>>","onPreExecute()");
 		}
 		
 		@Override
 		protected void onPostExecute(Boolean result) {
-			Log.d(">>>>","onPostExectue()");
+			Log.d(">>>>","onPostExecute()");
 			if (response == 0) { //SUCCESS
 				updateLanguageBundleList();
 			}			
@@ -152,8 +164,94 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 		}		
 	}
     
+	//added by Mike, 29 Sept. 2015
+    //Reference: http://stackoverflow.com/questions/13017122/how-to-show-progressdialog-across-launching-a-new-activity;
+    //last accessed: 29 Sept. 2015; answer by: Slartibartfast, 23 Oct. 2012
+    class BuyBackgroundTask extends AsyncTask<String, Integer, Boolean> {	
+    	@Override
+		protected void onPreExecute() {
+			Log.d(">>>>","onPreExecute()");
+		}
+		
+		@Override
+		protected void onPostExecute(Boolean result) {
+			Log.d(">>>>","onPostExecute()");
+		    if (mService!=null) {
+				try {					
+					if (pendingBuyIntent!=null) {
+						myActivity.startIntentSenderForResult(pendingBuyIntent.getIntentSender(),
+								   1001, new Intent(), Integer.valueOf(0), Integer.valueOf(0),
+								   Integer.valueOf(0));	
+					}
+					else {
+						//go back to the main thread
+			            Handler mainHandler = new Handler(myActivity.getBaseContext().getMainLooper());
+			            Runnable myRunnable = new Runnable() {
+			            	@Override
+			            	public void run() {
+						    	new AlertDialog.Builder(myActivity).setTitle("Connection Failure!")
+			            		.setMessage("Unable to connect to Google Play. Please make sure that you are connected to the internet.")
+								.setPositiveButton("OK", new DialogInterface.OnClickListener() {					
+									@Override
+									public void onClick(DialogInterface dialog, int which) {	            				
+									}
+								}).show();							
+			            	}
+			            };
+			            mainHandler.post(myRunnable);
+					}				
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+		    }
+		}
+		
+		@Override
+		protected Boolean doInBackground(String... params) {		
+			Log.d(">>>>","doInBackground()");
+			processBuy();
+
+		    //Do all your slow tasks here but don't set anything on UI
+		    //ALL UI activities on the main thread 		
+		    return true;		
+		}		
+	}
+
     public int myOwnedItemsGetResponseCode() {
 		return myOwnedItems.getInt("RESPONSE_CODE");    	
+    }
+
+    public void processBuy() {
+		final int pos = myPos;		
+    	try {
+		    if (mService==null) {
+		    	UsbongUtils.initInAppBillingService(myActivity);
+		    	mService = UsbongUtils.getInAppMService();
+		    }
+		    
+		    UsbongUtils.generateDateTimeStamp();
+		    if (mService!=null) {
+                try {
+					buyIntentBundle = mService.getBuyIntent(3, myActivity.getPackageName(),
+							  defaultSkuList.get(pos), "inapp", UsbongUtils.getDateTimeStamp());				
+					pendingBuyIntent = buyIntentBundle.getParcelable("BUY_INTENT");
+                } catch (Exception e) {
+                	e.printStackTrace();
+                }
+		    }
+		    else {				    					    	
+		    	new AlertDialog.Builder(myActivity).setTitle("Connection Failure")
+        		.setMessage("Unable to connect to Google Play. Please make sure that you are connected to the internet.")
+				.setPositiveButton("OK", new DialogInterface.OnClickListener() {					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {	            				
+					}
+				}).show();
+		    }
+		  } catch (Exception e) {
+				e.printStackTrace();
+		  }		
     }
     
 	@Override
@@ -217,60 +315,13 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 			buyButton.setVisibility(Button.VISIBLE);			
 		}
 		
-		final int pos = position;		
+//		final int pos = position;		
+		myPos = position;		
 		buyButton.setOnClickListener(new OnClickListener() {           
 			  @Override
 			  public void onClick(View v) 
 			  {
-				  try {
-				    if (mService==null) {
-				    	UsbongUtils.initInAppBillingService(myActivity);
-				    	mService = UsbongUtils.getInAppMService();
-				    }
-				    
-				    UsbongUtils.generateDateTimeStamp();
-				    if (mService!=null) {
-				    	//create a separate thread; don't use the main thread
-				    	Handler handler = new Handler();
-			    		final Runnable r = new Runnable() {
-			    		    public void run() {
-			                    try {
-									buyIntentBundle = mService.getBuyIntent(3, myActivity.getPackageName(),
-											  defaultSkuList.get(pos), "inapp", UsbongUtils.getDateTimeStamp());				
-									PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
-									if (pendingIntent!=null) {
-										myActivity.startIntentSenderForResult(pendingIntent.getIntentSender(),
-												   1001, new Intent(), Integer.valueOf(0), Integer.valueOf(0),
-												   Integer.valueOf(0));							
-									}
-									else {
-								    	new AlertDialog.Builder(myActivity).setTitle("Connection Failure!")
-					            		.setMessage("Unable to connect to Google Play. Please make sure that you are connected to the internet.")
-										.setPositiveButton("OK", new DialogInterface.OnClickListener() {					
-											@Override
-											public void onClick(DialogInterface dialog, int which) {	            				
-											}
-										}).show();							
-									}
-			                    } catch (Exception e) {
-			                    	e.printStackTrace();
-			                    }
-			    		    }
-			    		};
-			    		handler.postDelayed(r, 1000);
-				    }
-				    else {				    					    	
-				    	new AlertDialog.Builder(myActivity).setTitle("Connection Failure")
-	            		.setMessage("Unable to connect to Google Play. Please make sure that you are connected to the internet.")
-						.setPositiveButton("OK", new DialogInterface.OnClickListener() {					
-							@Override
-							public void onClick(DialogInterface dialog, int which) {	            				
-							}
-						}).show();
-				    }
-				  } catch (Exception e) {
-						e.printStackTrace();
-				  }				
+				  new BuyBackgroundTask().execute();				  		
 //				  Log.d(">>>>","pressed!"+defaultSkuList.get(pos));
 //				  Log.d(">>>>","pressed!"+languageBundleList[pos][0]);
 			  }    

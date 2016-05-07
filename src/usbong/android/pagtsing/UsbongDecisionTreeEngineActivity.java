@@ -227,7 +227,8 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
     //added by Mike, 20160420
     private static AlertDialog.Builder purchaseLanguagesListDialog;
     private static PurchaseLanguageBundleListAdapter myPurchaseLanguageBundleListAdapter;
-	
+	private static DialogInterface purchaseLanguagesListDialogInterface;
+
 //	@SuppressLint("InlinedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -358,8 +359,8 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 		        new DialogInterface.OnClickListener() {
 		            public void onClick(DialogInterface dialog, int which) {								            	
 //		                Log.i("Selected Item : ", (String) myPurchaseLanguageBundleListAdapter.getItem(which));
-//		                dialog.dismiss();
-		                
+//		                dialog.dismiss();		            	
+		            	purchaseLanguagesListDialogInterface = dialog;
 		            }
 		        });				            	
     	purchaseLanguagesListDialog.setNegativeButton("Cancel",
@@ -1295,6 +1296,15 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
     	             //TODO: fix this
     	        	 //alert("Failed to parse purchase data.");
     	             e.printStackTrace();
+    	          }
+    	         
+    	          //added by Mike, 20160507
+    	          if (purchaseLanguagesListDialogInterface!=null) {
+        	          purchaseLanguagesListDialogInterface.dismiss();    	        	  
+    	          }
+    	          
+    	          if ((inAppSettingsDialog!=null)&&(inAppSettingsDialog.isShowing())) {    	        	  
+    	        	  inAppSettingsDialog.dismiss();
     	          }
     	      }
     	   }

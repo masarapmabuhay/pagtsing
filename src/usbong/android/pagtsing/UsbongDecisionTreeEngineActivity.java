@@ -230,7 +230,8 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
     private static PurchaseLanguageBundleListAdapter myPurchaseLanguageBundleListAdapter;
 	private static DialogInterface purchaseLanguagesListDialogInterface;
 	private static AlertDialog.Builder setLanguageDialog;
-    	
+	private AlertDialog mySetLanguageAlertDialog;
+
 	private ArrayAdapter<String> arrayAdapter; //added by Mike, 20160507
 	
 //	@SuppressLint("InlinedApi")
@@ -360,8 +361,8 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 				        new DialogInterface.OnClickListener() {
 				            public void onClick(DialogInterface dialog, int which) {								            	
 	//			                Log.i("Selected Item : ", (String) myPurchaseLanguageBundleListAdapter.getItem(which));
-	//			                dialog.dismiss();		            	
-				            	purchaseLanguagesListDialogInterface = dialog;
+				                dialog.dismiss();	//edited by Mike, 20160508	            	
+	//			            	purchaseLanguagesListDialogInterface = dialog;
 				            }
 				        });				            	
 		    	purchaseLanguagesListDialog.setNegativeButton("Cancel",
@@ -596,7 +597,9 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 				if (!UsbongUtils.hasUnlockedLocalLanguages) {
 					if (UsbongUtils.isLocalLanguage(this.getItem(position).toString())) {
 						if ((myAlertDialog==null) || (!myAlertDialog.isShowing())) {
-							myAlertDialog = purchaseLanguagesListDialog.show();
+							//added by Mike, 20160508
+							mySetLanguageAlertDialog.dismiss();
+							myAlertDialog = purchaseLanguagesListDialog.show();						
 						}
 						return false;
 					}
@@ -606,6 +609,8 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 					//if it is not a local language, then it is a foreign language
 					if (!UsbongUtils.isLocalLanguage(this.getItem(position).toString())) {
 						if ((myAlertDialog==null) || (!myAlertDialog.isShowing())) {
+							//added by Mike, 20160508
+							mySetLanguageAlertDialog.dismiss();
 							myAlertDialog = purchaseLanguagesListDialog.show();
 						}
 						return false;
@@ -672,6 +677,7 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 		        new DialogInterface.OnClickListener() {
 		            public void onClick(DialogInterface dialog, int which) {
 		            	purchaseLanguagesListDialog.show();
+		            	dialog.dismiss();
 		            }
 		        });
 		// cancel button
@@ -704,7 +710,7 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 		                dialog.dismiss();
 		            }
 		        });
-		setLanguageDialog.show();
+		mySetLanguageAlertDialog = setLanguageDialog.show();
 	}
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
@@ -1317,13 +1323,14 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
     	        	 //alert("Failed to parse purchase data.");
     	             e.printStackTrace();
     	          }
-
+/*
     	         //refresh the menu options
- 		    	AlertDialog purchaseLanguagesListAlertDialog = purchaseLanguagesListDialog.create();
- 		    	purchaseLanguagesListAlertDialog.invalidateOptionsMenu();
+ 		    	 AlertDialog purchaseLanguagesListAlertDialog = purchaseLanguagesListDialog.create();
+ 		    	 purchaseLanguagesListAlertDialog.invalidateOptionsMenu();
 
- 		    	AlertDialog setLanguageAlertDialog = setLanguageDialog.create();
- 		    	setLanguageAlertDialog.invalidateOptionsMenu(); 		    	
+ 		    	 AlertDialog setLanguageAlertDialog = setLanguageDialog.create();
+ 		    	 setLanguageAlertDialog.invalidateOptionsMenu(); 		    	
+*/ 		    	 
     	      }
     	   }
     }

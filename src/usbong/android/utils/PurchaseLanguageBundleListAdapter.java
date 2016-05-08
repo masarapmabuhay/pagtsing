@@ -110,7 +110,7 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 		      String purchaseData = purchaseDataList.get(i);
 		      String signature = signatureList.get(i);
 		      String sku = ownedSkus.get(i);
-/*
+
 //consume product items
 		      try {
 			      JSONObject o = new JSONObject(purchaseData);
@@ -121,7 +121,6 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 		      catch (Exception e) {
 		    	  e.printStackTrace();
 		      }
-*/		      
 		      
 	    	  if (sku.contains("local")) {
     			languageBundleList[0][1] = "Owned";

@@ -228,8 +228,9 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
     //added by Mike, 20160420
     private static AlertDialog.Builder purchaseLanguagesListDialog;
     private static PurchaseLanguageBundleListAdapter myPurchaseLanguageBundleListAdapter;
-	private static DialogInterface purchaseLanguagesListDialogInterface;
-	private static AlertDialog.Builder setLanguageDialog;
+//	private static DialogInterface purchaseLanguagesListDialogInterface;
+	private AlertDialog purchaseLanguageListAlertDialog;
+    private static AlertDialog.Builder setLanguageDialog;
 	private AlertDialog mySetLanguageAlertDialog;
 
 	private ArrayAdapter<String> arrayAdapter; //added by Mike, 20160507
@@ -587,7 +588,7 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 		arrayAdapter = new ArrayAdapter<String>(
 		        this,
 		        android.R.layout.simple_list_item_single_choice) {
-			private AlertDialog myAlertDialog;
+//			private AlertDialog myAlertDialog;
 			@Override
 		    public boolean isEnabled(int position) {
 				if (UsbongUtils.isLanguageIsAnException(this.getItem(position).toString())) {
@@ -596,10 +597,11 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 
 				if (!UsbongUtils.hasUnlockedLocalLanguages) {
 					if (UsbongUtils.isLocalLanguage(this.getItem(position).toString())) {
-						if ((myAlertDialog==null) || (!myAlertDialog.isShowing())) {
+						if ((purchaseLanguageListAlertDialog==null) || (!purchaseLanguageListAlertDialog.isShowing())) {
 							//added by Mike, 20160508
 							mySetLanguageAlertDialog.dismiss();
-							myAlertDialog = purchaseLanguagesListDialog.show();						
+//							myAlertDialog = purchaseLanguagesListDialog.show();						
+							purchaseLanguageListAlertDialog = purchaseLanguagesListDialog.show();						
 						}
 						return false;
 					}
@@ -608,10 +610,11 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 				if (!UsbongUtils.hasUnlockedForeignLanguages) {
 					//if it is not a local language, then it is a foreign language
 					if (!UsbongUtils.isLocalLanguage(this.getItem(position).toString())) {
-						if ((myAlertDialog==null) || (!myAlertDialog.isShowing())) {
+						if ((purchaseLanguageListAlertDialog==null) || (!purchaseLanguageListAlertDialog.isShowing())) {
 							//added by Mike, 20160508
 							mySetLanguageAlertDialog.dismiss();
-							myAlertDialog = purchaseLanguagesListDialog.show();
+//							myAlertDialog = purchaseLanguagesListDialog.show();
+							purchaseLanguageListAlertDialog = purchaseLanguagesListDialog.show();						
 						}
 						return false;
 					}
@@ -712,6 +715,7 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 		        });
 		mySetLanguageAlertDialog = setLanguageDialog.show();
 	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{		
@@ -1331,6 +1335,7 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
  		    	 AlertDialog setLanguageAlertDialog = setLanguageDialog.create();
  		    	 setLanguageAlertDialog.invalidateOptionsMenu(); 		    	
 */ 		    	 
+    	         purchaseLanguageListAlertDialog.dismiss();
     	      }
     	   }
     }

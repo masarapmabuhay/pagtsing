@@ -229,9 +229,9 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
     private static AlertDialog.Builder purchaseLanguagesListDialog;
     private static PurchaseLanguageBundleListAdapter myPurchaseLanguageBundleListAdapter;
 //	private static DialogInterface purchaseLanguagesListDialogInterface;
-	private AlertDialog purchaseLanguageListAlertDialog;
+	private static AlertDialog purchaseLanguageListAlertDialog;
     private static AlertDialog.Builder setLanguageDialog;
-	private AlertDialog mySetLanguageAlertDialog;
+	private static AlertDialog mySetLanguageAlertDialog;
 
 	private ArrayAdapter<String> arrayAdapter; //added by Mike, 20160507
 	
@@ -679,7 +679,7 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 		setLanguageDialog.setPositiveButton("Unlock Languages",
 		        new DialogInterface.OnClickListener() {
 		            public void onClick(DialogInterface dialog, int which) {
-		            	purchaseLanguagesListDialog.show();
+						purchaseLanguageListAlertDialog = purchaseLanguagesListDialog.show();
 		            	dialog.dismiss();
 		            }
 		        });

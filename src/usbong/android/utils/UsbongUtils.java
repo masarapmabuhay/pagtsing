@@ -123,7 +123,7 @@ public class UsbongUtils {
 	public static String USBONG_TREES_FILE_PATH = BASE_FILE_PATH + "usbong_trees/"; //will be changed later in UsbongDecisionTreeEngineActivity.java
 		
 	//added by Mike, 20160420
-	public static boolean hasUnlockedLocalLanguages=false; //except Filipino
+	public static boolean hasUnlockedLocalLanguages=true; //except Filipino
 	public static boolean hasUnlockedForeignLanguages=false; //except English
 	
 	//added by Mike, 20160504
@@ -2118,9 +2118,27 @@ public class UsbongUtils {
 	    			}
 	    		}	    		
 	    		
-//	    		tokenizedStringList.add(temp.toString()+" "); //commented out by Mike, 19 Sept. 2015
-	    		tokenizedStringList.add(temp.toString());
-	    		temp.delete(0, temp.length());//reset
+	    		//added by Mike, 20160714
+	    		if (temp.toString().contains("<br>")) {
+	    			while (temp.toString().contains("<br>")) {
+		    			tokenizedStringList.add(temp.subSequence(0, temp.toString().indexOf("<br>")).toString());
+		    			String step = temp.toString().replace(tokenizedStringList.get(tokenizedStringList.size()-1).toString()+"<br>","");
+		    			temp.delete(0, temp.length());//reset
+		    			temp.append(step);
+		    			tokenizedStringList.add("<br>");
+	    			}
+	    			if (temp.toString().trim().length()>0) {
+			    		tokenizedStringList.add(temp.toString());
+			    		temp.delete(0, temp.length());//reset	    			
+	    			}
+//		    		tokenizedStringList.add(temp.subSequence(temp.toString().indexOf("<br>"), temp.length()).toString().replaceAll("<br>",""));
+//		    		temp.delete(0, temp.length());//reset
+	    		}
+	    		else {
+	//	    		tokenizedStringList.add(temp.toString()+" "); //commented out by Mike, 19 Sept. 2015
+		    		tokenizedStringList.add(temp.toString());
+		    		temp.delete(0, temp.length());//reset
+	    		}
 	    	}		    	    	
 	    }
     	
@@ -2134,9 +2152,10 @@ public class UsbongUtils {
 		  for(int i=0; i<tokenizedStringList.size(); i++) {				  
 			  foundMatch=false;
 			  
-			  Log.d(">>>>", "tokenizedString: "+tokenizedStringList.get(i).trim().toLowerCase().replaceAll("[^\\w\\s]", ""));
+			  Log.d(">>>>", "tokenizedString: "+tokenizedStringList.get(i).trim().toLowerCase().replace("<br>", "").replaceAll("[^\\w\\s]", ""));
 			  
-			  String tokenizedString = tokenizedStringList.get(i).trim().toLowerCase().replaceAll("[^\\w\\s]", "");
+			  //edited by Mike, 20160714
+			  String tokenizedString = tokenizedStringList.get(i).trim().toLowerCase().replaceAll("[^\\w\\s]", ""); 
 			  
 			  if (myHashtableForCurrLang.containsKey(tokenizedString)) {					  								  
 				  final String hintText = myHashtableForCurrLang.get(tokenizedString);

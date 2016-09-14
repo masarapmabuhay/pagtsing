@@ -378,6 +378,7 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 			protected Boolean doInBackground(String... params) {
 			    try {
 			    	UsbongUtils.initInAppBillingService(getInstance());
+			    	UsbongUtils.initInAppBillingService(getInstance()); //need to call this twice to get the updated languageBundleList
 			    }
 			    catch (Exception e) {
 			    	e.printStackTrace();

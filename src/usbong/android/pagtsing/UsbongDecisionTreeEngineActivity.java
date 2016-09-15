@@ -95,8 +95,6 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 
 //	private static boolean USE_ENG_ONLY=true; //uses English only	
 //	private static boolean UsbongUtils.IS_IN_DEBUG_MODE=false;
-
-	public final String myPackageName="usbong.android.pagtsing";
 	
 	public int currLanguageBeingUsed;
 	
@@ -210,7 +208,7 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 	
 	private ProgressDialog myProgressDialog;
 	
-	private int currSelectedItemForSetLanguage=0;
+	private int currSelectedItemForSetLanguage; //set this later in init()
 	
 	//added by Mike, 20160417
     private YouTubePlayerFragment myYouTubePlayerFragment;
@@ -243,9 +241,15 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
         super.onCreate(savedInstanceState);        
                 
         instance=this;
+        
+        //added by Mike, 20160511
+        if (UsbongUtils.hasUnlockedAllLanguages) {
+        	UsbongUtils.hasUnlockedLocalLanguages=true;
+        	UsbongUtils.hasUnlockedForeignLanguages=true;        	
+        }
 
     	//edited by Mike, 20160417
-    	UsbongUtils.USBONG_TREES_FILE_PATH = UsbongDecisionTreeEngineActivity.getInstance().getCacheDir().getAbsolutePath() + "/usbong_pagtsing_alpha/" + "usbong_trees/";
+    	UsbongUtils.USBONG_TREES_FILE_PATH = UsbongDecisionTreeEngineActivity.getInstance().getCacheDir().getAbsolutePath() + UsbongUtils.myAppTreeFolder;
 
         //added by Mike, 20151212
 //    	UsbongUtils.USBONG_TREES_FILE_PATH = UsbongDecisionTreeEngineActivity.getInstance().getCacheDir().getAbsolutePath() + "/usbong_kuto/" + "usbong_kuto_trees/";
@@ -278,16 +282,44 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
         	currScreen=Integer.parseInt(getIntent().getStringExtra("currScreen")); 
         }
         
-        //default..
+        //updated by Mike, 20160608
+/*        
         currLanguageBeingUsed=UsbongUtils.LANGUAGE_ENGLISH;
 		UsbongUtils.setCurrLanguage("English"); //added by Mike, 22 Sept. 2015
-
+*/
+        //Reference: http://stackoverflow.com/questions/23024831/android-shared-preferences-example
+        //; last accessed: 9 June 2015
+        //answer by Elenasys
+        //added by Mike, 9 June 2015
+        SharedPreferences prefs = getSharedPreferences(UsbongConstants.MY_SAVED_LANGUAGE_SETTING, MODE_PRIVATE);
+        if (prefs!=null) {
+		  //@todo: remove this id thing, immediately use the String; otherwise it'll be cumbersome to keep on adding language ids
+		  currLanguageBeingUsed=prefs.getInt("preferredLanguage", UsbongUtils.getLanguageID(UsbongUtils.getCurrLanguage())); //default is Filipino
+/* //commented out by Mike, 20160608
+ * //default language will be set based on the default language set in the .xml of the .utree file
+ * 		  UsbongUtils.setDefaultLanguage(UsbongUtils.getLanguageBasedOnID(currLanguageBeingUsed));
+ */
+		  UsbongUtils.setCurrLanguage(UsbongUtils.getLanguageBasedOnID(currLanguageBeingUsed));//prefs.getInt("preferredLanguage", 0))); //updated by Mike, 20160612
+      	}
+      	else {
+          //default..
+          currLanguageBeingUsed=UsbongUtils.getLanguageID(UsbongUtils.getCurrLanguage());
+		  //UsbongUtils.setCurrLanguage(UsbongUtils.getLanguageBasedOnID(currLanguageBeingUsed)); //updated by Mike, 20160612
+      	}
+        
+/* 		//commented out by Mike, 20160618
+ * 		//why? the index numbers used by currSelectedItemForSetLanguage does not always match with currLanguageBeingUsed
+ *        //added by Mike, 20160608
+ *        currSelectedItemForSetLanguage = currLanguageBeingUsed;
+ */     
         //==================================================================
         //text-to-speech stuff
+        /*//comment out, not needed in DAHON, 
+ * commented out by Mike, 20160613
         Intent checkIntent = new Intent();
         checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
         startActivityForResult(checkIntent, UsbongUtils.MY_DATA_CHECK_CODE);
-
+*/
         mTts = new TextToSpeech(this,this);
 		mTts.setLanguage(new Locale("en", "US"));//default
         //==================================================================
@@ -324,7 +356,7 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
  
     		//create the usbong_demo_tree and store it in sdcard/usbong/usbong_trees
 //    		UsbongUtils.storeAssetsFileIntoSDCard(this,"usbong_demo_tree.xml");
-    		UsbongUtils.storeAssetsFileIntoSDCard(this,"pagtsing.utree");
+    		UsbongUtils.storeAssetsFileIntoSDCard(this,UsbongUtils.DEFAULT_UTREE_TO_LOAD+".utree");
     	}
     	catch(IOException ioe) {
     		ioe.printStackTrace();
@@ -597,6 +629,7 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 				}
 
 				if (!UsbongUtils.hasUnlockedLocalLanguages) {
+					Log.d(">>>>this.getItem(position).toString(): ",this.getItem(position).toString());
 					if (UsbongUtils.isLocalLanguage(this.getItem(position).toString())) {
 						if ((purchaseLanguageListAlertDialog==null) || (!purchaseLanguageListAlertDialog.isShowing())) {
 							//added by Mike, 20160508
@@ -629,9 +662,20 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
         if (myTransArrayList==null) {
         	myTransArrayList = new ArrayList<String>();
         }
+
         //add the language setting of the xml tree to the list
-        myTransArrayList.add(0, UsbongUtils.getDefaultLanguage());
+//        myTransArrayList.add(0, UsbongUtils.getDefaultLanguage());
+        myTransArrayList.add(0, UsbongUtils.getDefaultLanguageOfXML()); //edited by Mike, 20160608
         final int myTransArrayListSize = myTransArrayList.size();
+
+        //added by Mike, 20160618
+        currSelectedItemForSetLanguage = UsbongUtils.getLanguageID(UsbongUtils.getDefaultLanguage());
+		for (int i = 0; i < myTransArrayListSize; i++) {
+			if (myTransArrayList.get(i).equals(UsbongUtils.getLanguageBasedOnID(currLanguageBeingUsed))) {
+				currSelectedItemForSetLanguage = i;
+			}
+		}
+      
 /*		        
 		for (int i = 0; i < myTransArrayListSize; i++) {
 		    arrayAdapter.add(myTransArrayList.get(i));				    
@@ -691,6 +735,7 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 		                dialog.dismiss();
 		            }
 		        });
+		Log.d(">>>>>","currSelectedItemForSetLanguage: "+currSelectedItemForSetLanguage);
 		setLanguageDialog.setSingleChoiceItems(arrayAdapter,currSelectedItemForSetLanguage,//setAdapter(arrayAdapter,
 		        new DialogInterface.OnClickListener() {
 		            public void onClick(DialogInterface dialog, int which) {
@@ -702,6 +747,15 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 						currLanguageBeingUsed = UsbongUtils.getLanguageID(UsbongUtils.getSetLanguage());
 						UsbongUtils.setCurrLanguage(UsbongUtils.getSetLanguage()); //added by Mike, 22 Sept. 2015
 						
+						//added by Mike, 20160608
+				        //Reference: http://stackoverflow.com/questions/23024831/android-shared-preferences-example
+				        //; last accessed: 9 June 2015
+				        //answer by Elenasys
+				        //added by Mike, 9 June 2015
+				        SharedPreferences.Editor editor = getSharedPreferences(UsbongConstants.MY_SAVED_LANGUAGE_SETTING, MODE_PRIVATE).edit();
+				        editor.putInt("preferredLanguage", currLanguageBeingUsed);
+				        editor.commit();
+
 						//added by Mike, 4 June 2015
 						//remove the current element in the node container and start anew
 						//so that when end-user presses back, the previous screen will appear,

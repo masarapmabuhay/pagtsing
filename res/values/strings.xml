@@ -38,7 +38,11 @@
 	<string name="alertStringValueJapanese">ご注意下さい！</string>	
 	<string name="alertStringValueMandarin">请注意一下！</string>	
 
-	<string name="areYouSureYouWantToReturnToTheTitleScreen">Are you sure you want to return to the Title Screen?</string>
+	<string name="areYouSureYouWantToReturnToTitleScreen">Are you sure you want to return to the Title Screen?</string>
+	<string name="areYouSureYouWantToReturnToTitleScreenEnglish">Are you sure you want to return to the Title Screen?</string>
+	<string name="areYouSureYouWantToReturnToTitleScreenFilipino">Sigurado ka bang nais mong bumalik sa Title Screen?</string>
+	<string name="areYouSureYouWantToReturnToTitleScreenJapanese">タイトル画面へ本当に戻りたいですか？</string>
+	<string name="areYouSureYouWantToReturnToTitleScreenMandarin">你肯定想回去标题屏幕吗？</string>
 			
 	<string name="areYouSureYouWantToReturnToMainMenuEnglish">Are you sure you want to return to Main Menu?</string>
 	<string name="areYouSureYouWantToReturnToMainMenuFilipino">Sigurado ka bang nais mong bumalik sa Main Menu?</string>

@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.net.URL;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -66,13 +65,11 @@ import usbong.android.pagtsing.R;
 import usbong.android.pagtsing.UsbongDecisionTreeEngineActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -80,10 +77,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.IBinder;
 import android.text.Html;
 import android.text.SpannableString;
@@ -116,14 +111,20 @@ public class UsbongUtils {
 	public static boolean IS_IN_AUTO_PLAY_MODE=false;
 	public static boolean IS_IN_AUTO_LOOP_MODE=false;
 	
+	public static boolean hasUnlockedAllLanguages=false; //updated by Mike, 20160612
+
 	public final static String API_KEY = "AIzaSyB5mM_lk_bbdT5nUWQTO6S5FyZ9IgaxqXc"; //added by Mike, 20151120
 
 	public static String DEFAULT_UTREE_TO_LOAD="pagtsing"; //updated by Mike, 20160418
 	public static String BASE_FILE_PATH = Environment.getExternalStorageDirectory()+"/usbong_pagtsing/";
 	public static String USBONG_TREES_FILE_PATH = BASE_FILE_PATH + "usbong_trees/"; //will be changed later in UsbongDecisionTreeEngineActivity.java
 		
+	//added by Mike, 20160511
+	public final static String myPackageName="usbong.android.pagtsing";
+	public static String myAppTreeFolder = "/usbong_pagtsing/usbong_trees/";
+
 	//added by Mike, 20160420
-	public static boolean hasUnlockedLocalLanguages=true; //except Filipino
+	public static boolean hasUnlockedLocalLanguages=false; //except Filipino
 	public static boolean hasUnlockedForeignLanguages=false; //except English
 	
 	//added by Mike, 20160504
@@ -151,8 +152,6 @@ public class UsbongUtils {
 	public static final int LANGUAGE_SPANISH=10;
 	public static final int LANGUAGE_KOREAN=11;
 	
-	private static String currLanguage;
-	
 	private static String destinationServerURL;
 	
 	public static final String debug_username="usbong";
@@ -169,7 +168,9 @@ public class UsbongUtils {
 	public static String myTreeFileName="";
 	
 	public static String usbongDefaultLanguage="English"; //default is English
-	public static String usbongSetLanguage=usbongDefaultLanguage; //default is English
+//	public static String usbongSetLanguage=usbongDefaultLanguage; //default is English
+	private static String currLanguage=usbongDefaultLanguage;
+	private static String usbongDefaultLanguageOfXML=usbongDefaultLanguage; //added by Mike, 20160608
 		
 	public static final boolean USE_UNESCAPE=true; //allows the use of \n (new line) in the decision tree	
 
@@ -240,6 +241,20 @@ public class UsbongUtils {
 /*        return EMAIL_ADDRESS_PATTERN.matcher(email).matches();
  */
 		return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches(); //updated by Mike, 24 Sept. 2015
+	}
+
+	//added by Mike, 20160608
+	public static boolean isAnAutoPlayException(UsbongDecisionTreeEngineActivity a) {
+		//this would cover:
+		//		public static final int TEXT_DISPLAY_SCREEN=9;	
+		//		public static final int IMAGE_DISPLAY_SCREEN=10;
+		//		public static final int TEXT_IMAGE_DISPLAY_SCREEN=11;
+		//		public static final int IMAGE_TEXT_DISPLAY_SCREEN=12;
+		//		public static final int CLASSIFICATION_SCREEN=13;		
+		if ((a.currScreen>=UsbongConstants.TEXT_DISPLAY_SCREEN) && (a.currScreen<=UsbongConstants.CLASSIFICATION_SCREEN)) {
+			return true;
+		}
+		return false;
 	}
 
 	//-----------------------------------------------------------------
@@ -433,13 +448,13 @@ public class UsbongUtils {
 	//updated by Mike, 20160504
 	//must comply with JDK 1.6
 	public static boolean isLocalLanguage(String s) {
-		if (s.equals("Bisaya")) {
+		if (s.contains("Bisaya")) {
 			return true;
 		}
-		else if (s.equals("Ilonggo")) {
+		else if (s.contains("Ilonggo")) {
 			return true;
 		}
-		else if (s.equals("Kapampangan")) {
+		else if (s.contains("Kapampangan")) {
 			return true;
 		}
 		return false;
@@ -1398,22 +1413,22 @@ public class UsbongUtils {
 	    	else if (s.equals("Mandarin")) {
 	    		return LANGUAGE_MANDARIN;
 	    	}
-	    	if (s.equals("Bisaya")) {
+	    	else if (s.equals("Bisaya")) {
 	    		return LANGUAGE_BISAYA;
 	    	}
-	    	if (s.equals("Ilonggo")) {
+	    	else if (s.equals("Ilonggo")) {
 	    		return LANGUAGE_ILONGGO;
 	    	}
-	    	if (s.equals("Kapampangan")) {
+	    	else if (s.equals("Kapampangan")) {
 	    		return LANGUAGE_KAPAMPANGAN;
 	    	}
-	    	if (s.equals("French")) {
+	    	else if (s.equals("French")) {
 	    		return LANGUAGE_FRENCH;
 	    	}
-	    	if (s.equals("Spanish")) {
+	    	else if (s.equals("Spanish")) {
 	    		return LANGUAGE_SPANISH;
 	    	}
-	    	if (s.equals("Korean")) {
+	    	else if (s.equals("Korean")) {
 	    		return LANGUAGE_KOREAN;
 	    	}
     	}
@@ -1450,18 +1465,35 @@ public class UsbongUtils {
     }
     
     public static String getSetLanguage() {
-    	return usbongSetLanguage;
+    	//edited by Mike, 20160618
+//    	return usbongSetLanguage;
+    	return currLanguage;    		
+    }
+
+    //added by Mike, 20160608
+    public static String getDefaultLanguageOfXML() {
+    	return usbongDefaultLanguageOfXML;
     }
 
     public static void setDefaultLanguage(String s) {
     	usbongDefaultLanguage = s;
-    	usbongSetLanguage = usbongDefaultLanguage;
+    	
+    	//edited by Mike, 20160618
+    	//usbongSetLanguage = usbongDefaultLanguage;
+    	currLanguage = usbongDefaultLanguage;
     }
     
     public static void setLanguage(String s) {
-    	usbongSetLanguage = s;
+    	//edited by Mike, 20160618
+    	//usbongSetLanguage = s;
+    	currLanguage = s;
     }
-    
+   
+    //added by Mike, 20160608
+    public static void setDefaultLanguageOfXML(String s) {
+    	usbongDefaultLanguageOfXML = s;
+    }
+
     public static Intent performSendToCloudBasedServiceProcess(String filepath, List<String> filePathsList) {
 //		final Intent sendToCloudBasedServiceIntent = new Intent(android.content.Intent.ACTION_SEND);
     	final Intent sendToCloudBasedServiceIntent;
@@ -2851,6 +2883,32 @@ public class UsbongUtils {
     	else { //if (currLanguageBeingUsed==UsbongUtils.LANGUAGE_ENGLISH) {
     		myPrompts[MY_PROMPT_TITLE] = ((String) UsbongDecisionTreeEngineActivity.getInstance().getResources().getText(R.string.alertStringValueEnglish));				    						    		        	    		
     		myPrompts[MY_PROMPT_MESSAGE] = ((String) UsbongDecisionTreeEngineActivity.getInstance().getResources().getText(R.string.areYouSureYouWantToReturnToMainMenuEnglish));
+    		myPrompts[MY_PROMPT_POSITIVE_BUTTON_TEXT] = (String) UsbongDecisionTreeEngineActivity.getInstance().getResources().getText(R.string.yesStringValueEnglish);
+    		myPrompts[MY_PROMPT_NEGATIVE_BUTTON_TEXT] = (String) UsbongDecisionTreeEngineActivity.getInstance().getResources().getText(R.string.noStringValueEnglish);  
+    	}
+    	
+    	return myPrompts;
+    }
+
+    //added by Mike, 20150616
+    public static String[] initProcessReturnToTitleScreenActivity() {
+		String[] myPrompts = new String[4];
+    	    	
+    	if (getLanguageID(currLanguage)==LANGUAGE_FILIPINO) {
+    		myPrompts[MY_PROMPT_TITLE] = ((String) UsbongDecisionTreeEngineActivity.getInstance().getResources().getText(R.string.alertStringValueFilipino));
+    		myPrompts[MY_PROMPT_MESSAGE] = ((String) UsbongDecisionTreeEngineActivity.getInstance().getResources().getText(R.string.areYouSureYouWantToReturnToTitleScreenFilipino));
+    		myPrompts[MY_PROMPT_POSITIVE_BUTTON_TEXT] = (String) UsbongDecisionTreeEngineActivity.getInstance().getResources().getText(R.string.yesStringValueFilipino);
+    		myPrompts[MY_PROMPT_NEGATIVE_BUTTON_TEXT] = (String) UsbongDecisionTreeEngineActivity.getInstance().getResources().getText(R.string.noStringValueFilipino);  
+    	}
+    	else if (getLanguageID(currLanguage)==LANGUAGE_JAPANESE) {
+    		myPrompts[MY_PROMPT_TITLE] = ((String) UsbongDecisionTreeEngineActivity.getInstance().getResources().getText(R.string.alertStringValueJapanese));				    						    		
+    		myPrompts[MY_PROMPT_MESSAGE] = ((String) UsbongDecisionTreeEngineActivity.getInstance().getResources().getText(R.string.areYouSureYouWantToReturnToTitleScreenJapanese));
+    		myPrompts[MY_PROMPT_POSITIVE_BUTTON_TEXT] = (String) UsbongDecisionTreeEngineActivity.getInstance().getResources().getText(R.string.yesStringValueJapanese);
+    		myPrompts[MY_PROMPT_NEGATIVE_BUTTON_TEXT] = (String) UsbongDecisionTreeEngineActivity.getInstance().getResources().getText(R.string.noStringValueJapanese);  
+    	}
+    	else { //if (currLanguageBeingUsed==UsbongUtils.LANGUAGE_ENGLISH) {
+    		myPrompts[MY_PROMPT_TITLE] = ((String) UsbongDecisionTreeEngineActivity.getInstance().getResources().getText(R.string.alertStringValueEnglish));				    						    		        	    		
+    		myPrompts[MY_PROMPT_MESSAGE] = ((String) UsbongDecisionTreeEngineActivity.getInstance().getResources().getText(R.string.areYouSureYouWantToReturnToTitleScreenEnglish));
     		myPrompts[MY_PROMPT_POSITIVE_BUTTON_TEXT] = (String) UsbongDecisionTreeEngineActivity.getInstance().getResources().getText(R.string.yesStringValueEnglish);
     		myPrompts[MY_PROMPT_NEGATIVE_BUTTON_TEXT] = (String) UsbongDecisionTreeEngineActivity.getInstance().getResources().getText(R.string.noStringValueEnglish);  
     	}

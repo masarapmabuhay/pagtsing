@@ -60,39 +60,52 @@ public class PurchaseLanguageBundleListAdapter extends BaseAdapter
 	    defaultSkuList.add(UsbongConstants.ALL_LOCAL_LANGUAGES_PRODUCT_ID);
 	    defaultSkuList.add(UsbongConstants.ALL_FOREIGN_LANGUAGES_PRODUCT_ID);	    
 	    
-		//added by Mike, 20160425
-	    if (ownedItems!=null) {
-	    	Log.d(">>>","ownedItems NOT null");
-			new MyPLBLABackgroundTask().execute();    
-/*	    	
-	    	int response = -1;
-			response = myOwnedItemsGetResponseCode();
-			if (response == 0) { //SUCCESS
-				updateLanguageBundleList();
-			}	
+	    //added by Mike, 20160511
+	    if (UsbongUtils.hasUnlockedAllLanguages) {
+			languageBundleList[0][1] = "Owned";
+			languageBundleList[1][1] = "Owned";
+			
+/*	//do these in UsbongDecisionTreeEngineActivity
+			UsbongUtils.hasUnlockedLocalLanguages=true;
+			UsbongUtils.hasUnlockedForeignLanguages=true;
 */			
+		    UsbongUtils.hasLoadedPurchaseLanguageBundleList=true;
 	    }
 	    else {
-	        //Reference: http://stackoverflow.com/questions/23024831/android-shared-preferences-example
-	        //; last accessed: 20150609
-	        //answer by Elenasys
-	        //added by Mike, 20160425
-	        SharedPreferences prefs = myActivity.getSharedPreferences(UsbongConstants.MY_PURCHASED_ITEMS, android.content.Context.MODE_PRIVATE);
-	        if (prefs!=null) {
-				languageBundleList[0][1] = prefs.getString(UsbongConstants.ALL_LOCAL_LANGUAGES_PRODUCT_ID, UsbongConstants.DEFAULT_PRICE);
-				languageBundleList[1][1] = prefs.getString(UsbongConstants.ALL_FOREIGN_LANGUAGES_PRODUCT_ID, UsbongConstants.DEFAULT_PRICE);
-				
-		    	if (languageBundleList[0][1].contains("Owned")) {
-	    			UsbongUtils.hasUnlockedLocalLanguages=true;
-		    	}
-		    	if (languageBundleList[1][1].contains("Owned")) { //foreign
-	    			UsbongUtils.hasUnlockedForeignLanguages=true;
-		    	}
-	        }
-		    UsbongUtils.hasLoadedPurchaseLanguageBundleList=true;
-	    }		
+		    //added by Mike, 20160425
+		    if (ownedItems!=null) {
+		    	Log.d(">>>","ownedItems NOT null");
+				new MyPLBLABackgroundTask().execute();    
+	/*	    	
+		    	int response = -1;
+				response = myOwnedItemsGetResponseCode();
+				if (response == 0) { //SUCCESS
+					updateLanguageBundleList();
+				}	
+	*/			
+		    }
+		    else {
+		        //Reference: http://stackoverflow.com/questions/23024831/android-shared-preferences-example
+		        //; last accessed: 20150609
+		        //answer by Elenasys
+		        //added by Mike, 20160425
+		        SharedPreferences prefs = myActivity.getSharedPreferences(UsbongConstants.MY_PURCHASED_ITEMS, android.content.Context.MODE_PRIVATE);
+		        if (prefs!=null) {
+					languageBundleList[0][1] = prefs.getString(UsbongConstants.ALL_LOCAL_LANGUAGES_PRODUCT_ID, UsbongConstants.DEFAULT_PRICE);
+					languageBundleList[1][1] = prefs.getString(UsbongConstants.ALL_FOREIGN_LANGUAGES_PRODUCT_ID, UsbongConstants.DEFAULT_PRICE);
+					
+			    	if (languageBundleList[0][1].contains("Owned")) {
+		    			UsbongUtils.hasUnlockedLocalLanguages=true;
+			    	}
+			    	if (languageBundleList[1][1].contains("Owned")) { //foreign
+		    			UsbongUtils.hasUnlockedForeignLanguages=true;
+			    	}
+		        }
+			    UsbongUtils.hasLoadedPurchaseLanguageBundleList=true;
+		    }		
 	    // if continuationToken != null, call getPurchases again
 	    // and pass in the token to retrieve more items
+	    }
 	}
 
 	public void updateLanguageBundleList() {

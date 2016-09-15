@@ -18,10 +18,6 @@ import java.util.Calendar;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import usbong.android.pagtsing.R;
@@ -625,6 +621,10 @@ public class UsbongScreenProcessor
 			Configuration userConfig = new Configuration();
 			Settings.System.getConfiguration( udtea.getContentResolver(), userConfig );
 			Calendar date = Calendar.getInstance( userConfig.locale);
+
+			
+			
+/*
 			//Reference: http://www.androidpeople.com/android-spinner-default-value;
 			//last accessed: 21 Aug. 2012		        
 			//month-------------------------------
@@ -689,6 +689,7 @@ public class UsbongScreenProcessor
 			else {
 				myDateYearEditText.setText(myStringToken);
 			}
+*/			
 		} else if (udtea.currScreen == UsbongConstants.TEXT_DISPLAY_SCREEN) {
 			udtea.setContentView(R.layout.text_display_screen);
 			udtea.initBackNextButtons();
@@ -739,7 +740,7 @@ public class UsbongScreenProcessor
 			if (!UsbongUtils.setImageDisplay(myImageDisplayScreenImageView, udtea.myTree, UsbongUtils.getResName(udtea.currUsbongNode))) {
 			//Reference: http://www.anddev.org/tinytut_-_get_resources_by_name__getidentifier_-t460.html; last accessed 14 Sept 2011
 //			        Resources myRes = getResources();
-			    myDrawableImage = myRes.getDrawable(myRes.getIdentifier("no_image", "drawable", udtea.myPackageName));
+			    myDrawableImage = myRes.getDrawable(myRes.getIdentifier("no_image", "drawable", UsbongUtils.myPackageName));
 			    myImageDisplayScreenImageView.setImageDrawable(myDrawableImage);		        		        	
 			}
 		} else if (udtea.currScreen == UsbongConstants.CLICKABLE_IMAGE_DISPLAY_SCREEN) {
@@ -749,7 +750,7 @@ public class UsbongScreenProcessor
 			if (!UsbongUtils.setClickableImageDisplay(myClickableImageDisplayScreenImageButton, udtea.myTree, UsbongUtils.getResName(udtea.currUsbongNode))) {
 			//Reference: http://www.anddev.org/tinytut_-_get_resources_by_name__getidentifier_-t460.html; last accessed 14 Sept 2011
 //			        Resources myRes = getResources();
-			    myDrawableImage = myRes.getDrawable(myRes.getIdentifier("no_image", "drawable", udtea.myPackageName));
+			    myDrawableImage = myRes.getDrawable(myRes.getIdentifier("no_image", "drawable", UsbongUtils.myPackageName));
 			    myClickableImageDisplayScreenImageButton.setBackgroundDrawable(myDrawableImage);		        		        	
 			}
 			myClickableImageDisplayScreenImageButton.setOnClickListener(new OnClickListener() {
@@ -782,7 +783,7 @@ public class UsbongScreenProcessor
 			if (!UsbongUtils.setClickableImageDisplay(myTextClickableImageDisplayScreenImageButton, udtea.myTree, UsbongUtils.getResName(udtea.currUsbongNode))) {
 			//Reference: http://www.anddev.org/tinytut_-_get_resources_by_name__getidentifier_-t460.html; last accessed 14 Sept 2011
 //			        Resources myRes = getResources();
-			    myDrawableImage = myRes.getDrawable(myRes.getIdentifier("no_image", "drawable", udtea.myPackageName));
+			    myDrawableImage = myRes.getDrawable(myRes.getIdentifier("no_image", "drawable", UsbongUtils.myPackageName));
 			    myTextClickableImageDisplayScreenImageButton.setBackgroundDrawable(myDrawableImage);		        		        	
 			}
 			myTextClickableImageDisplayScreenImageButton.setOnClickListener(new OnClickListener() {
@@ -815,7 +816,7 @@ public class UsbongScreenProcessor
 			if (!UsbongUtils.setClickableImageDisplay(myClickableImageTextDisplayScreenImageButton, udtea.myTree, UsbongUtils.getResName(udtea.currUsbongNode))) {
 			//Reference: http://www.anddev.org/tinytut_-_get_resources_by_name__getidentifier_-t460.html; last accessed 14 Sept 2011
 //			        Resources myRes = getResources();
-			    myDrawableImage = myRes.getDrawable(myRes.getIdentifier("no_image", "drawable", udtea.myPackageName));
+			    myDrawableImage = myRes.getDrawable(myRes.getIdentifier("no_image", "drawable", UsbongUtils.myPackageName));
 			    myClickableImageTextDisplayScreenImageButton.setBackgroundDrawable(myDrawableImage);
 			}
 			myClickableImageTextDisplayScreenImageButton.setOnClickListener(new OnClickListener() {
@@ -866,7 +867,7 @@ public class UsbongScreenProcessor
 			if (!UsbongUtils.setImageDisplay(myTextImageDisplayImageView, udtea.myTree, UsbongUtils.getResName(udtea.currUsbongNode))) {
 			//Reference: http://www.anddev.org/tinytut_-_get_resources_by_name__getidentifier_-t460.html; last accessed 14 Sept 2011
 //			        Resources myRes = getResources();
-			    myDrawableImage = myRes.getDrawable(myRes.getIdentifier("no_image", "drawable", udtea.myPackageName));
+			    myDrawableImage = myRes.getDrawable(myRes.getIdentifier("no_image", "drawable", UsbongUtils.myPackageName));
 			    myTextImageDisplayImageView.setImageDrawable(myDrawableImage);		        		        	
 			}
 		} else if (udtea.currScreen == UsbongConstants.IMAGE_TEXT_DISPLAY_SCREEN) {
@@ -879,7 +880,7 @@ public class UsbongScreenProcessor
 			if (!UsbongUtils.setImageDisplay(myImageTextDisplayImageView, udtea.myTree, UsbongUtils.getResName(udtea.currUsbongNode))) {
 			//Reference: http://www.anddev.org/tinytut_-_get_resources_by_name__getidentifier_-t460.html; last accessed 14 Sept 2011
 //			        Resources myRes = getResources();
-			    myDrawableImage = myRes.getDrawable(myRes.getIdentifier("no_image", "drawable", udtea.myPackageName));
+			    myDrawableImage = myRes.getDrawable(myRes.getIdentifier("no_image", "drawable", UsbongUtils.myPackageName));
 			    myImageTextDisplayImageView.setImageDrawable(myDrawableImage);		        		        	
 			}
 		} else if (udtea.currScreen == UsbongConstants.GPS_LOCATION_SCREEN) {

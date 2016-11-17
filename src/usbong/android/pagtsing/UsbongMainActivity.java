@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import usbong.android.utils.AppRater;
 import usbong.android.utils.UsbongConstants;
 import usbong.android.utils.UsbongUtils;
 import android.app.Activity;
@@ -27,7 +28,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -39,7 +40,6 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 /*
@@ -48,7 +48,6 @@ import android.widget.ListView;
 public class UsbongMainActivity extends AppCompatActivity/*Activity*/ 
 {	
 	private Button startButton;
-	private ImageView coverImage;
 	private static UsbongMainActivity instance;
 				
 	public static String timeStamp;
@@ -83,8 +82,18 @@ public class UsbongMainActivity extends AppCompatActivity/*Activity*/
 //    	if (instance==null) { //comment this out, since the app seems to retain the instance even after we do a finish to GameActivity to close the app...
 	        setContentView(R.layout.main);	        
 	        instance = this;
-//	    	startTime = new Date();
-	    	
+//	    	startTime = new Date();	        
+
+            //added by Mike, 20161117
+        	Bundle extras = getIntent().getExtras();
+        	if (extras!=null) {
+	        	String message = extras.getString("completed_tree");
+
+	        	if (message.equals("true")) {
+			        AppRater.showRateDialog(this); 
+	        	}	        		
+        	}
+        	
 	        reset();
 	        initMainMenuScreen();
     }
@@ -225,6 +234,7 @@ public class UsbongMainActivity extends AppCompatActivity/*Activity*/
 		prompt.show();
 	}
 */	
+
     //added by Mike, 29 July 2015
     //Reference: http://stackoverflow.com/questions/10407159/how-to-manage-startactivityforresult-on-android;
     //last accessed: 29 Sept. 2015; answer by Nishant, 2 May 2012; edited by Daniel Nugent, 9 July 2015
@@ -239,8 +249,8 @@ public class UsbongMainActivity extends AppCompatActivity/*Activity*/
             }
             if (resultCode == RESULT_CANCELED) {
                 //Write your code if there's no result
-            }
-        }        
+            }            
+        }                    
     }//onActivityResult
 
     //added by Mike, July 2, 2015

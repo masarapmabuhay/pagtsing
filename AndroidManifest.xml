@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="usbong.android.pagtsing"
-      android:versionCode="20"
-      android:versionName="1.5.8-20160914"
+      android:versionCode="23"
+      android:versionName="1.6.1-20161117"
       android:installLocation="auto"      
 >
 
@@ -17,7 +17,6 @@
               android:anyDensity="true"/>
     
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="com.android.vending.BILLING"/>
     

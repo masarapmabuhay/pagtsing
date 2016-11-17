@@ -37,6 +37,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import usbong.android.features.node.PaintActivity;
 import usbong.android.features.node.QRCodeReaderActivity;
 import usbong.android.multimedia.audio.AudioRecorder;
+import usbong.android.utils.AppRater;
 import usbong.android.utils.FedorMyLocation;
 import usbong.android.utils.PurchaseLanguageBundleListAdapter;
 import usbong.android.utils.UsbongConstants;
@@ -2240,12 +2241,21 @@ public class UsbongDecisionTreeEngineActivity extends AppCompatActivity implemen
 
     		//added by Mike, 20160415
     		if (UsbongUtils.IS_IN_AUTO_LOOP_MODE) {
+    			//added by Mike, 20161117
+		        AppRater.showRateDialog(this); 
+
     			isAutoLoopedTree=true;
     			initParser(myTree);
     			return;
     		}
-    		else {
+    		else {    	
+    			//return to main activity
     			finish();
+    			//added by Mike, 20161117
+    			Intent toUsbongMainActivityIntent = new Intent(UsbongDecisionTreeEngineActivity.this, UsbongMainActivity.class);
+    			toUsbongMainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); 
+    			toUsbongMainActivityIntent.putExtra("completed_tree","true");
+    			startActivity(toUsbongMainActivityIntent);
     		}
     	}
     	else {			

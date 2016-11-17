@@ -72,7 +72,7 @@ public class UsbongConstants {
     
     public static final String ALL_LOCAL_LANGUAGES_PRODUCT_ID = "usbong.pagtsing.all_local_languages_001";
     public static final String ALL_FOREIGN_LANGUAGES_PRODUCT_ID = "usbong.pagtsing.all_foreign_languages_001";
-    public static final String DEFAULT_PRICE = "0.99USD";
+    public static final String DEFAULT_PRICE = "0.99USD (15PhP)"; //updated by Mike, 20161010
     public static final String MY_PURCHASED_ITEMS = "MyPurchasedItems"; //added by Mike, 20160427
 
     //SETTINGS 

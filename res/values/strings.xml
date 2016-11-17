@@ -12,7 +12,10 @@
     <string name="settings">Settings</string>    
     <string name="exit">Exit</string>        
     <string name="dont_have_an_account">Don\'t have an account?</string>        
-    
+
+    <string name="feedback_how_likely_to_recommend">How likely are you to recommend this app to your friends and family?</string>    
+
+    <string name="submit_feedback_button">Submit Feedback</string>    
     <string name="back">Back</string>    
     <string name="next">Next</string>    
     <string name="team_name_textview">Team Name:</string>    

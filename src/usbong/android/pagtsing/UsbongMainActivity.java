@@ -89,7 +89,7 @@ public class UsbongMainActivity extends AppCompatActivity/*Activity*/
         	if (extras!=null) {
 	        	String message = extras.getString("completed_tree");
 
-	        	if (message.equals("true")) {
+	        	if ((message!=null) && (message.equals("true"))) {
 			        AppRater.showRateDialog(this); 
 	        	}	        		
         	}
